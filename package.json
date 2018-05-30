@@ -10,13 +10,19 @@
     "test": "concurrently \"webpack -d --watch\" \"node server/index.js\"",
     "heroku-postbuild": "webpack -p --config ./webpack.config.js --progress"
   },
-  "author": "Beth Johnson",
+  "engines": {
+    "node": "9.9.0"
+  },
+  "author": "Carter, Mitch, Travis, and Raphael",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-loader": "^6.3.2",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.23.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0",
     "webpack": "^2.2.1"
   },
   "dependencies": {
@@ -29,6 +35,7 @@
     "mongoose": "^4.8.6",
     "mysql": "^2.13.0",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "request": "^2.87.0"
   }
 }
