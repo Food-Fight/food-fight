@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const request = require('request');
+
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 // var items = require('../database-mysql');
 // var items = require('../database-mongo');
@@ -21,7 +22,7 @@ app.use(express.static(`${__dirname}/../react-client/dist`));
 
 app.post('/search', (req, res) => {
   const { zip } = req.body;
-  let options = {
+  const options = {
     method: 'GET',
     uri: 'https://api.yelp.com/v3/businesses/search',
     headers: {
@@ -29,7 +30,7 @@ app.post('/search', (req, res) => {
     },
     qs: {
       location: zip,
-    }
+    },
   };
   request(options, (err, data) => {
     if (err) {
@@ -37,10 +38,12 @@ app.post('/search', (req, res) => {
       res.statusCode(404).end();
     }
     // To Do: Add code to pass all this data on to the database
-    res.send(data.body);
+    //
+    /* For some reason the Yelp API returns a stringified object nested within a stringified
+      object, so I think we will have to use this JSON parse here to return the proper format
+      (even though we are already using the Body Parser) - Carter */
+    res.send(JSON.parse(data.body));
   });
-
-  
 });
 
 app.listen(process.env.PORT || 3000, () => {
