@@ -1,6 +1,7 @@
 {
   "name": "github-fetcher-fullstack-v2",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "react-dev": "webpack -d --watch",
