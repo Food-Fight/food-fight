@@ -36,15 +36,5 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "request": "^2.87.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ctrobins/food-fight.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/ctrobins/food-fight/issues"
-  },
-  "homepage": "https://github.com/ctrobins/food-fight#readme",
-  "description": ""
+  }
 }
