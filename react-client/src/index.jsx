@@ -7,28 +7,33 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      items: []
-    }
+      query : ''
+    };
   }
 
   componentDidMount() {
-    $.ajax({
-      url: '/items', 
-      success: (data) => {
-        this.setState({
-          items: data
-        })
-      },
-      error: (err) => {
-        console.log('err', err);
+  }
+
+  searchYelp() {
+    $.post('/search', {zip: 27608}, (data, err) => {
+      if (err) {
+        console.log(err);
       }
+      console.log(data);
     });
+  }
+
+  updateQuery(e) {
+    // this.setState({
+    //   query : e.target.value
+    // });
   }
 
   render () {
     return (<div>
-      <h1>Item List</h1>
-      <List items={this.state.items}/>
+      <h1>Food Fight</h1>
+    Enter a zip code: 
+    <input type="text" value={this.state.query} onChange={this.updateQuery.bind(this)}/> <button onClick={this.searchYelp.bind(this)}> Search </button>
     </div>)
   }
 }
