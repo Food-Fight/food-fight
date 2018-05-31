@@ -12,6 +12,7 @@ const request = require('request');
 const app = express();
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // UNCOMMENT FOR REACT
 app.use(express.static(`${__dirname}/../react-client/dist`));
@@ -21,7 +22,9 @@ app.use(express.static(`${__dirname}/../react-client/dist`));
 // app.use(express.static(__dirname + '/../node_modules'));
 
 app.post('/search', (req, res) => {
+  console.log('Received request', req.body);
   const { zip } = req.body;
+  // To Do: Store the zip code and other relavent information in the database
   const options = {
     method: 'GET',
     uri: 'https://api.yelp.com/v3/businesses/search',
@@ -37,11 +40,6 @@ app.post('/search', (req, res) => {
       console.log('Error in interacting with the Yelp API', err);
       res.statusCode(404).end();
     }
-    // To Do: Add code to pass all this data on to the database
-    //
-    /* For some reason the Yelp API returns a stringified object nested within a stringified
-      object, so I think we will have to use this JSON parse here to return the proper format
-      (even though we are already using the Body Parser) - Carter */
     res.send(JSON.parse(data.body));
   });
 });
@@ -49,4 +47,3 @@ app.post('/search', (req, res) => {
 app.listen(process.env.PORT || 3000, () => {
   console.log('listening on port', process.env.PORT || 3000);
 });
-
