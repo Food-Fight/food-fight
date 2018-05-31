@@ -1,36 +1,51 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import $ from 'jquery';
-import List from './components/List.jsx';
+import React from "react";
+import ReactDOM from "react-dom";
+import $ from "jquery";
+import RestaurantList from "./components/RestaurantList.jsx";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      items: []
-    }
+    this.state = {
+      query: "",
+      restaurants: []
+    };
   }
 
-  componentDidMount() {
-    $.ajax({
-      url: '/items', 
-      success: (data) => {
+  componentDidMount() {}
+
+  searchYelp() {
+    $.post("/search", { zip: this.state.query }, (data, status) => {
+      console.log(`Requested Yelp search for ${this.state.query}:`, status);
+      if (data.businesses) {
         this.setState({
-          items: data
-        })
-      },
-      error: (err) => {
-        console.log('err', err);
+          restaurants: data.businesses
+        });
       }
     });
   }
 
-  render () {
-    return (<div>
-      <h1>Item List</h1>
-      <List items={this.state.items}/>
-    </div>)
+  updateQuery(e) {
+    this.setState({
+      query: e.target.value
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Food Fight</h1>
+        Enter a zip code:
+        <input
+          type="text"
+          value={this.state.query}
+          onChange={this.updateQuery.bind(this)}
+        />{" "}
+        <button onClick={this.searchYelp.bind(this)}> Search </button>
+        <RestaurantList restaurants={this.state.restaurants}/>
+      </div>
+    );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById("app"));
