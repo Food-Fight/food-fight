@@ -5,6 +5,11 @@ const bodyParser = require('body-parser');
 
 const request = require('request');
 
+const Mailjet = require('node-mailjet').connect(
+  process.env.MAILJET_API_KEY,
+  process.env.MAILJET_API_SECRET,
+);
+
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 // var items = require('../database-mysql');
 // var items = require('../database-mongo');
@@ -21,8 +26,29 @@ app.use(express.static(`${__dirname}/../react-client/dist`));
 // app.use(express.static(__dirname + '/../angular-client'));
 // app.use(express.static(__dirname + '/../node_modules'));
 
-app.post('/search', (req, res) => {
-  console.log('Received request', req.body);
+app.post('/api/email', (req, res) => {
+  console.log('Received request to send email to', req.body.email);
+  const { email, id } = req.body;
+  const emailData = {
+    FromEmail: 'foodfightHR@gmail.com',
+    FromName: 'Food Fight',
+    Subject: 'You\'ve been invited to a Food Fight!',
+    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'localhost:3000'}/${id} to begin.`,
+    Recipients: [{ Email: email }],
+  };
+  Mailjet.post('send')
+    .request(emailData)
+    .then(() => {
+      res.end('Email sent!');
+    })
+    .catch((err) => {
+      console.log('Error in interacting with the MailJet API', err);
+      res.statusCode(404).end();
+    });
+});
+
+app.post('/api/search', (req, res) => {
+  console.log('Received request for Yelp search of', req.body);
   const { zip } = req.body;
   // To Do: Store the zip code and other relavent information in the database
   const options = {
