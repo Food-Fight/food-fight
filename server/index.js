@@ -33,7 +33,7 @@ app.post('/api/email', (req, res) => {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
     Subject: 'You\'ve been invited to a Food Fight!',
-    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000'}/${id} to begin.`,
+    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}${id} to begin.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
