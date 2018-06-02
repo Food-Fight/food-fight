@@ -1,15 +1,15 @@
-var mysql = require('mysql');
+let mysql = require('mysql');
 
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'FILL_ME_IN',
-  database : 'test'
+let connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'FILL_ME_IN',
+  database: 'test',
 });
 
-var selectAll = function(callback) {
-  connection.query('SELECT * FROM items', function(err, results, fields) {
-    if(err) {
+let selectAll = function (callback) {
+  connection.query('SELECT * FROM items', (err, results, fields) => {
+    if (err) {
       callback(err, null);
     } else {
       callback(null, results);

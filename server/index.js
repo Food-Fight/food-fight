@@ -33,7 +33,7 @@ app.post('/api/email', (req, res) => {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
     Subject: 'You\'ve been invited to a Food Fight!',
-    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'localhost:3000'}/${id} to begin.`,
+    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000'}/${id} to begin.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
@@ -43,7 +43,7 @@ app.post('/api/email', (req, res) => {
     })
     .catch((err) => {
       console.log('Error in interacting with the MailJet API', err);
-      res.statusCode(404).end();
+      res.status(404).end();
     });
 });
 
@@ -64,7 +64,7 @@ app.post('/api/search', (req, res) => {
   request(options, (err, data) => {
     if (err) {
       console.log('Error in interacting with the Yelp API', err);
-      res.statusCode(404).end();
+      res.status(404).end();
     }
     res.send(JSON.parse(data.body));
   });
