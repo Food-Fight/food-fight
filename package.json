@@ -32,11 +32,12 @@
     "dotenv": "^5.0.1",
     "express": "^4.15.0",
     "jquery": "^3.1.1",
-    "mongoose": "^4.8.6",
-    "mysql": "^2.13.0",
     "nodemon": "^1.17.5",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "request": "^2.87.0"
+    "request": "^2.87.0",
+    "sequelize": "^4.37.10"
   }
 }
