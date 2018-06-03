@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const path = require('path');
 const request = require('request');
 
 const Mailjet = require('node-mailjet').connect(
@@ -19,12 +19,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// UNCOMMENT FOR REACT
 app.use(express.static(`${__dirname}/../react-client/dist`));
-
-// UNCOMMENT FOR ANGULAR
-// app.use(express.static(__dirname + '/../angular-client'));
-// app.use(express.static(__dirname + '/../node_modules'));
 
 app.post('/api/email', (req, res) => {
   console.log('Received request to send email to', req.body.email);
@@ -33,7 +28,7 @@ app.post('/api/email', (req, res) => {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
     Subject: 'You\'ve been invited to a Food Fight!',
-    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}${id} to begin.`,
+    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}rooms/${id} to begin.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
@@ -47,10 +42,17 @@ app.post('/api/email', (req, res) => {
     });
 });
 
+app.post('/api/save', (req, res) => {
+  const { id, members } = req.body;
+  // TO DO: Store this info in the database
+  res.end(`Room ${id} saved`);
+});
+
 app.post('/api/search', (req, res) => {
   console.log('Received request for Yelp search of', req.body);
   const { zip } = req.body;
-  // To Do: Store the zip code and other relavent information in the database
+  // TO DO: Store the zip code in the database (may be incorporated into /api/save request
+  // depending on how the front end is structured)
   const options = {
     method: 'GET',
     uri: 'https://api.yelp.com/v3/businesses/search',
@@ -68,6 +70,12 @@ app.post('/api/search', (req, res) => {
     }
     res.send(JSON.parse(data.body));
   });
+});
+
+// Sets up default case so that any URL not handled by the Express Router
+// will be handled by the React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.join(`${__dirname}/../react-client/dist/index.html`));
 });
 
 app.listen(process.env.PORT || 3000, () => {

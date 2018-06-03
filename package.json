@@ -34,10 +34,13 @@
     "jquery": "^3.1.1",
     "node-mailjet": "^3.2.1",
     "nodemon": "^1.17.5",
+    "path": "^0.12.7",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "request": "^2.87.0",
     "sequelize": "^4.37.10",
     "unique-string": "^1.0.0"
