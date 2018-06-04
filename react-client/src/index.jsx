@@ -6,7 +6,6 @@ import { BrowserRouter, Route, Link } from 'react-router-dom';
 import RestaurantList from './components/RestaurantList.jsx';
 import CreateRoom from './components/CreateRoom.jsx';
 import Room from './components/Room.jsx';
-import Title from './components/Title.jsx';
 import Hero from './components/Hero.jsx';
 
 import 'bulma/css/bulma.css';
