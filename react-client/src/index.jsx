@@ -1,29 +1,30 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import $ from "jquery";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import $ from 'jquery';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
 
-import RestaurantList from "./components/RestaurantList.jsx";
-import CreateRoom from "./components/CreateRoom.jsx";
-import Room from "./components/Room.jsx";
+import RestaurantList from './components/RestaurantList.jsx';
+import CreateRoom from './components/CreateRoom.jsx';
+import Room from './components/Room.jsx';
+import style from './styles/main.scss';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      query: "",
-      restaurants: []
+      query: '',
+      restaurants: [],
     };
   }
 
   componentDidMount() {}
 
   searchYelp() {
-    $.post("/api/search", { zip: this.state.query }, (data, status) => {
+    $.post('/api/search', { zip: this.state.query }, (data, status) => {
       console.log(`Requested Yelp search for ${this.state.query}:`, status);
       if (data.businesses) {
         this.setState({
-          restaurants: data.businesses
+          restaurants: data.businesses,
         });
       }
     });
@@ -31,7 +32,7 @@ class App extends React.Component {
 
   updateQuery(e) {
     this.setState({
-      query: e.target.value
+      query: e.target.value,
     });
   }
 
@@ -44,7 +45,7 @@ class App extends React.Component {
           <Route path="/rooms/:roomID" component={Room} />
         </div>
       </BrowserRouter>
-    )
+    );
 
     //TO DO: Figure out where to put this
     //
@@ -63,4 +64,4 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById('app'));
