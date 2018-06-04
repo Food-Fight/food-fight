@@ -21,7 +21,9 @@ class CreateRoom extends React.Component {
   
   createRoom() {
     this.state.emails.forEach((email) => this.sendInvite(email));
-    //TO DO: SEND THIS ROOM INFORMATION TO THE DATABASE
+    $.post("/api/save", { id: this.state.roomID,  members: this.state.emails }, (data, status) => {
+      console.log(`Room ${this.state.roomID} saved to the database:`, status);
+    });
   }
   
   createUniqueID() {
@@ -31,7 +33,7 @@ class CreateRoom extends React.Component {
   }
   
   sendInvite(email) {
-    $.post("/api/email", { email: email, id: this.state.roomID}, (data, status) => {
+    $.post("/api/email", { email: email, id: this.state.roomID }, (data, status) => {
       console.log(`Email sent to ${email}:`, status);
     });
   }
@@ -44,7 +46,7 @@ class CreateRoom extends React.Component {
 
   render() {
     var uniqueURL = this.state.roomID ? 
-      `https://food-fight-greenfield.herokuapp.com/${this.state.roomID}`
+      `https://food-fight-greenfield.herokuapp.com/rooms/${this.state.roomID}`
       : "";
     return (
       <div>
