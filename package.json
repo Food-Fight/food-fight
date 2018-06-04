@@ -36,6 +36,7 @@
   "dependencies": {
     "angular": "^1.6.3",
     "body-parser": "^1.17.2",
+    "bulma": "^0.7.1",
     "concurrently": "^3.5.1",
     "dotenv": "^5.0.1",
     "express": "^4.15.0",
