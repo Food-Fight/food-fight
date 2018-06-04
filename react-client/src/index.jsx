@@ -6,7 +6,11 @@ import { BrowserRouter, Route, Link } from 'react-router-dom';
 import RestaurantList from './components/RestaurantList.jsx';
 import CreateRoom from './components/CreateRoom.jsx';
 import Room from './components/Room.jsx';
-import style from './styles/main.scss';
+import Title from './components/Title.jsx';
+import Hero from './components/Hero.jsx';
+
+import 'bulma/css/bulma.css';
+import './styles/main.scss';
 
 class App extends React.Component {
   constructor(props) {
@@ -38,13 +42,16 @@ class App extends React.Component {
 
   render() {
     return (
-      <BrowserRouter>
-        <div>
-          <Route exact path="/" component={CreateRoom} />
-          {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
-          <Route path="/rooms/:roomID" component={Room} />
-        </div>
-      </BrowserRouter>
+      <div>
+        <Hero />
+        <BrowserRouter>
+          <div>
+            <Route exact path="/" component={CreateRoom} />
+            {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
+            <Route path="/rooms/:roomID" component={Room} />
+          </div>
+        </BrowserRouter>
+      </div>
     );
 
     //TO DO: Figure out where to put this
