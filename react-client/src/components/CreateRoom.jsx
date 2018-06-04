@@ -1,74 +1,82 @@
-import React from "react";
-import $ from "jquery";
-import uniqueString from "unique-string";
+import React from 'react';
+import $ from 'jquery';
+import uniqueString from 'unique-string';
 
 class CreateRoom extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      query: "",
+      query: '',
       emails: [],
-      roomID: null
+      roomID: null,
     };
   }
 
   addEmail() {
     this.state.emails.push(this.state.query);
     this.setState({
-      query: ""
+      query: '',
     });
   }
-  
+
   createRoom() {
-    this.state.emails.forEach((email) => this.sendInvite(email));
-    $.post("/api/save", { id: this.state.roomID,  members: this.state.emails }, (data, status) => {
+    this.state.emails.forEach(email => this.sendInvite(email));
+    $.post('/api/save', { id: this.state.roomID, members: this.state.emails }, (data, status) => {
       console.log(`Room ${this.state.roomID} saved to the database:`, status);
     });
   }
-  
+
   createUniqueID() {
     this.setState({
-      roomID: uniqueString()
+      roomID: uniqueString(),
     });
   }
-  
+
   sendInvite(email) {
-    $.post("/api/email", { email: email, id: this.state.roomID }, (data, status) => {
+    $.post('/api/email', { email: email, id: this.state.roomID }, (data, status) => {
       console.log(`Email sent to ${email}:`, status);
     });
   }
-  
+
   updateQuery(e) {
     this.setState({
-      query: e.target.value
+      query: e.target.value,
     });
   }
 
   render() {
-    var uniqueURL = this.state.roomID ? 
-      `https://food-fight-greenfield.herokuapp.com/rooms/${this.state.roomID}`
-      : "";
+    var uniqueURL = this.state.roomID
+      ? `https://food-fight-greenfield.herokuapp.com/rooms/${this.state.roomID}`
+      : '';
     return (
       <div>
-        <h1>Create a Room</h1>
         <div>
-          <button onClick={this.createUniqueID.bind(this)}>
-            Create a Unique URL{" "}
+          <button onClick={this.createUniqueID.bind(this)} className="button is-normal is-info">
+            Create a Unique URL{' '}
           </button>
           {uniqueURL}
         </div>
-        Enter an email:
-        <input
-          type="text"
-          value={this.state.query}
-          onChange={this.updateQuery.bind(this)}
-        />{" "}
-        <button onClick={this.addEmail.bind(this)}> Invite </button>
-        {this.state.emails.map((email, index) => {
-          return <li key={index}>Invitation will be sent to {email}</li>;
-        })}
+        <div className="column is-half">
+          <input
+            type="email"
+            value={this.state.query}
+            onChange={this.updateQuery.bind(this)}
+            className="input is-large is-half"
+            placeholder="Email"
+          />{' '}
+          <button onClick={this.addEmail.bind(this)} className="button">
+            {' '}
+            Invite{' '}
+          </button>
+          {this.state.emails.map((email, index) => {
+            return <li key={index}>Invitation will be sent to {email}</li>;
+          })}
+        </div>
         <div>
-          <button onClick={this.createRoom.bind(this)}>Create Room</button>
+          <div className="is-divider" />
+          <button onClick={this.createRoom.bind(this)} className="button is-primary is-normal">
+            Create Room
+          </button>
         </div>
       </div>
     );

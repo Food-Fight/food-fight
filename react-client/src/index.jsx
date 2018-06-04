@@ -43,13 +43,16 @@ class App extends React.Component {
     return (
       <div>
         <Hero />
-        <BrowserRouter>
-          <div>
-            <Route exact path="/" component={CreateRoom} />
-            {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
-            <Route path="/rooms/:roomID" component={Room} />
-          </div>
-        </BrowserRouter>
+        <section className="create-room-container">
+          <h2 className="is-secondary title is-3"> Create A Room</h2>
+          <BrowserRouter>
+            <div className="container">
+              <Route exact path="/" component={CreateRoom} />
+              {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
+              <Route path="/rooms/:roomID" component={Room} />
+            </div>
+          </BrowserRouter>
+        </section>
       </div>
     );
 
