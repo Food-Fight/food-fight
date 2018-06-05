@@ -2,15 +2,18 @@ require('dotenv').config();
 
 const Sequelize = require('sequelize');
 
-// set up connection
+//
+// ─── DB CONNECTION ──────────────────────────────────────────────────────────────
+//
+// =====UNCOMMENT BELOW, WAS TESTING LOCALLY (TRAVIS)==============================
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-  host: process.env.DB_HOST,
+  // host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   dialect: 'postgres',
   operatorsAliases: false,
-  dialectOptions: {
-    ssl: true,
-  },
+  // dialectOptions: {
+  //   ssl: true,
+  // },
 });
 
 // testing connection
@@ -22,6 +25,10 @@ sequelize.authenticate()
     console.log('Unable to connect to the database:', err);
   });
 
+
+//
+// ─── USERS ──────────────────────────────────────────────────────────────────────
+//
 // user model
 const User = sequelize.define('user', {
   id: {
@@ -50,6 +57,10 @@ const User = sequelize.define('user', {
 // create user table
 User.sync();
 
+
+//
+// ─── ROOMS ──────────────────────────────────────────────────────────────────────
+//
 // room model
 const Room = sequelize.define('room', {
   id: {
@@ -100,6 +111,10 @@ const RoomUsers = sequelize.define('room_users', {
 // create room_users table
 RoomUsers.sync();
 
+
+//
+// ─── RESTAURANTS ────────────────────────────────────────────────────────────────
+//
 // restaurant model
 const Restaurant = sequelize.define('restaurant', {
   id: {

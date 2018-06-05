@@ -4,6 +4,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const request = require('request');
+const passport = require('passport');
+const auth = require('../lib/auth');
+const session = require('express-session');
+const morgan = require('morgan');
 
 const Mailjet = require('node-mailjet').connect(
   process.env.MAILJET_API_KEY,
@@ -20,7 +24,26 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(`${__dirname}/../react-client/dist`));
+app.use(morgan('dev'));
 
+
+//
+// ─── AUTHENTICAITON MIDDLEWARE ──────────────────────────────────────────────────
+//
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { },
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+auth.passportHelper(passport);
+
+
+//
+// ─── SERVE EMAILS ───────────────────────────────────────────────────────────────
+//
 app.post('/api/email', (req, res) => {
   console.log('Received request to send email to', req.body.email);
   const { email, id } = req.body;
@@ -42,6 +65,10 @@ app.post('/api/email', (req, res) => {
     });
 });
 
+
+//
+// ─── API LOGIC ──────────────────────────────────────────────────────────────────
+//
 app.post('/api/save', (req, res) => {
   const { id, members } = req.body;
   // TO DO: Store this info in the database
@@ -71,6 +98,8 @@ app.post('/api/search', (req, res) => {
     res.send(JSON.parse(data.body));
   });
 });
+// ────────────────────────────────────────────────────────────────────────────────
+
 
 // Sets up default case so that any URL not handled by the Express Router
 // will be handled by the React Router
