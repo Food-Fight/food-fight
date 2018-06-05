@@ -10,6 +10,9 @@ const Mailjet = require('node-mailjet').connect(
   process.env.MAILJET_API_SECRET,
 );
 
+const db = require('../database-postgresql/models');
+const helpers = require('../db-controllers');
+
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 // var items = require('../database-mysql');
 // var items = require('../database-mongo');
@@ -42,10 +45,24 @@ app.post('/api/email', (req, res) => {
     });
 });
 
+// TO DO: Store this info in the database
 app.post('/api/save', (req, res) => {
   const { id, members } = req.body;
-  // TO DO: Store this info in the database
-  res.end(`Room ${id} saved`);
+  helpers.saveRoom(id, (err, room) => {
+    if (err) {
+      console.log('Error saving room', err);
+    } else {
+      console.log('Success', room);
+      helpers.saveMembers(members, (error, result) => {
+        if (error) {
+          console.log('Error saving room members to database', error);
+        } else {
+          console.log('Members saved!', result);
+        }
+      });
+      res.end(`Room ${id} saved`, room);
+    }
+  });
 });
 
 app.post('/api/search', (req, res) => {
@@ -78,6 +95,9 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(`${__dirname}/../react-client/dist/index.html`));
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('listening on port', process.env.PORT || 3000);
+// create the tables based on the models and once done, listen on the given port
+db.models.sequelize.sync().then(() => {
+  app.listen(process.env.PORT || 3000, () => {
+    console.log('listening on port', process.env.PORT || 3000);
+  });
 });
