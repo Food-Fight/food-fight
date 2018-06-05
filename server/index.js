@@ -10,6 +10,8 @@ const Mailjet = require('node-mailjet').connect(
   process.env.MAILJET_API_SECRET,
 );
 
+const db = require('../database-postgresql/models');
+
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 // var items = require('../database-mysql');
 // var items = require('../database-mongo');
@@ -78,6 +80,9 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(`${__dirname}/../react-client/dist/index.html`));
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('listening on port', process.env.PORT || 3000);
+// create the tables based on the models and once done, listen on the given port
+db.models.sequelize.sync().then(() => {
+  app.listen(process.env.PORT || 3000, () => {
+    console.log('listening on port', process.env.PORT || 3000);
+  });
 });
