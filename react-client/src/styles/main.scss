@@ -1,10 +1,8 @@
-@import "themeColors";
-$theme-font: verdana, sans-serif;
-body {
-  font: $theme-font;
-  background-color: $themeColor-Light;
-  h1,
-  h2 {
-    color: $themeColor-Dark;
-  }
+@import 'colors';
+@import 'helpers';
+.create-room-container {
+    margin-top: 25px;
+    margin-left: 10px;
+    padding: 20px;
+    background-color: $grey;
 }
