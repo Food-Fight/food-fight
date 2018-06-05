@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
+import axios from 'axios';
 
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
@@ -18,10 +19,28 @@ class App extends React.Component {
     this.state = {
       query: '',
       restaurants: [],
+
+      loggedIn: false,
+      loggedInUsername: null,
+      loginError: false,
     };
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    console.log('PAGE RELOADED');
+    axios.get('/checklogin')
+      .then(res => {
+        console.log('THIS IS RES', res);
+        if (res.data.user) {
+          console.log('Logged in as:', res.data.user.email);
+          this.setState({
+            loggedIn: true,
+            loggedInUsername: res.data.user.email,
+            loginError: false,
+          });
+        }
+      });
+  }
 
   searchYelp() {
     $.post('/api/search', { zip: this.state.query }, (data, status) => {
@@ -40,10 +59,72 @@ class App extends React.Component {
     });
   }
 
+  //
+  // ─── USER AUTH ──────────────────────────────────────────────────────────────────
+  //
+  subscribe(email, password) {
+    console.log(`Subscribe with ${email} and ${password}`);
+    axios.post('/subscribe', {
+      params: {
+        email,
+        password
+      }
+    })
+      .then(
+        this.setState({
+          loggedIn: true,
+          loggedInUsername: email
+        }))
+      .catch(console.log);
+  }
+
+  login(email, password) {
+    console.log(`Login with ${username} and ${password}`);
+    axios.post('/login', {
+      email,
+      password
+    })
+      .then(res => {
+        console.log('DATA', res);
+        if (res.config.data) {
+          console.log('Logged in as:', JSON.parse(res.config.data).username);
+          this.setState({
+            loggedIn: true,
+            loggedInUsername: JSON.parse(res.config.data).username
+          });
+        }
+      })
+      .catch(
+        (error => {
+          console.log(this);
+          this.setState({
+            loginError: true
+          });
+        })()
+      );
+  }
+
+  logout() {
+    axios.get('/logout')
+      .then(res => {
+        console.log('Logging out');
+        this.setState({
+          loggedIn: false,
+          loginError: false
+        });
+      })
+  }
+
   render() {
     return (
       <div>
-        <Navbar />
+        <Navbar
+          login={this.login.bind(this)}
+          logout={this.logout.bind(this)}
+          subscribe={this.subscribe.bind(this)}
+          loggedIn={this.state.loggedIn}
+          username={this.state.loggedInUsername}
+          error={this.state.loginError} />
         <Hero />
         <section className="create-room-container">
           <h2 className="is-secondary title is-3"> Create A Room</h2>

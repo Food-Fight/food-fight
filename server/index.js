@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const request = require('request');
 const passport = require('passport');
+const flash = require('flash');
 const auth = require('../lib/auth');
 const session = require('express-session');
 const morgan = require('morgan');
@@ -14,7 +15,7 @@ const Mailjet = require('node-mailjet').connect(
   process.env.MAILJET_API_SECRET,
 );
 
-const db = require('../database-postgresql/models');
+const db = require('../database-postgresql/models/index');
 const helpers = require('../db-controllers');
 
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
@@ -25,9 +26,19 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(express.static(`${__dirname}/../react-client/dist`));
 app.use(morgan('dev'));
+
+
+// ────────────────────────────────────────────────────────────────────────────────
+// THIS NEEDS TO BE HERE FOR PASSPORT TO WORK
+// PLEASE DO NOT TOUCH (IT'S A DUMB WORKAROUND)
+app.use((req, res, next) => {
+  console.log('REQUEST BODY', req.body);
+  req.body = req.body.params;
+  next();
+});
+// ────────────────────────────────────────────────────────────────────────────────
 
 
 //
@@ -42,6 +53,47 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 auth.passportHelper(passport);
+app.use(flash());
+
+
+//
+// ─── GOOGLE OAUTH ENDPOINTS ─────────────────────────────────────────────────────
+//
+app.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }),
+);
+
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    res.redirect('/');
+  },
+);
+
+
+//
+// ─── LOCAL AUTH ENDPOINTS ───────────────────────────────────────────────────────
+//
+app.get('/checklogin', (req, res) => {
+  res.status(200).send(req.session.passport);
+});
+
+app.post('/subscribe', passport.authenticate('local-signup', {
+  successRedirect: '/',
+  failureFlash: true,
+}));
+
+app.post('/login', passport.authenticate('local-login', {
+  successRedirect: '/',
+  failureFlash: true,
+}));
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
 
 
 //
@@ -68,14 +120,11 @@ app.post('/api/email', (req, res) => {
     });
 });
 
-<<<<<<< HEAD
 
 //
 // ─── API LOGIC ──────────────────────────────────────────────────────────────────
 //
-=======
 // TO DO: Store this info in the database
->>>>>>> c1c67ecbceb9eb711ceb1169ac541dca5704f71c
 app.post('/api/save', (req, res) => {
   const { id, members } = req.body;
   helpers.saveRoom(id, (err, room) => {

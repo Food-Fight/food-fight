@@ -6,7 +6,7 @@ import React from 'react';
 // import DialogContent from '@material-ui/core/DialogContent';
 // import DialogContentText from '@material-ui/core/DialogContentText';
 // import DialogTitle from '@material-ui/core/DialogTitle';
-// import validator from 'validator';
+import validator from 'validator';
 
 class SubscribeDialog extends React.Component {
   constructor(props) {
@@ -14,7 +14,6 @@ class SubscribeDialog extends React.Component {
     this.state = {
       open: false,
       email: null,
-      username: null,
       password: null,
       emailValid: false,
     };
@@ -22,7 +21,6 @@ class SubscribeDialog extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleSubscribe = this.handleSubscribe.bind(this);
     this.enterEmail = this.enterEmail.bind(this);
-    this.enterUsername = this.enterUsername.bind(this);
     this.enterPassword = this.enterPassword.bind(this);
   }
 
@@ -52,12 +50,6 @@ class SubscribeDialog extends React.Component {
     }
   }
 
-  enterUsername(e) {
-    this.setState({
-      username: e.target.value
-    });
-  }
-
   enterPassword(e) {
     this.setState({
       password: e.target.value
@@ -70,7 +62,6 @@ class SubscribeDialog extends React.Component {
     });
     this.props.subscribe(
       this.state.email,
-      this.state.username,
       this.state.password);
   }
 
@@ -80,60 +71,131 @@ class SubscribeDialog extends React.Component {
       helperText: 'Please enter a valid email address'
     };
 
+    // Toggle show modal
+    const isActive = this.state.open ? (
+      { className: 'modal is-active' }
+    ) : { className: 'modal' };
+
     return (
       <div>
-        <Button onClick={this.handleClickOpen}>Subscribe</Button>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
-          <DialogContent>
-            <TextField
-              {...isEmailValid}
-              id="full-width"
-              label="Email"
-              // InputLabelProps={{
-              //   shrink: true,
-              // }}
-              fullWidth
-              margin="normal"
-              autoFocus={true}
-              onChange={this.enterEmail}
-            />
-            <TextField
-              id="full-width"
-              label="Username"
-              // InputLabelProps={{
-              //   shrink: true,
-              // }}
-              fullWidth
-              margin="normal"
-              onChange={this.enterUsername}
-            />
-            <TextField
-              id="full-width"
-              label="Password"
-              // InputLabelProps={{
-              //   shrink: true,
-              // }}
-              fullWidth
-              margin="normal"
-              type="password"
-              onChange={this.enterPassword}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} >
-              Cancel
-            </Button>
-            <Button onClick={this.handleSubscribe} >
-              Subscribe
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div >
+        <a className="button is-primary" onClick={this.handleClickOpen}>
+          <span className="icon">
+            <i className="fas fa-user"></i>
+          </span>
+          <span>
+            Subscribe
+          </span>
+        </a>
+        <div {...isActive} >
+          <div className="modal-background"></div>
+          <div className="modal-card">
+            <header className="modal-card-head">
+              <p className="modal-card-title">
+                Subscribe
+            </p>
+              <button
+                className="delete"
+                aria-label="close"
+                onClick={this.handleClose}
+              ></button>
+            </header>
+            <section className="modal-card-body">
+              <div className="field">
+                <p className="control has-icons-left has-icons-right">
+                  <input
+                    className="input"
+                    type="email"
+                    placeholder="Email"
+                    onChange={this.enterEmail} />
+                  <span className="icon is-small is-left">
+                    <i className="fas fa-envelope"></i>
+                  </span>
+                  <span className="icon is-small is-right">
+                    <i className="fas fa-check"></i>
+                  </span>
+                </p>
+              </div>
+              <div className="field">
+                <p className="control has-icons-left">
+                  <input
+                    className="input"
+                    type="password"
+                    placeholder="Password"
+                    onChange={this.enterPassword} />
+                  <span className="icon is-small is-left">
+                    <i className="fas fa-lock"></i>
+                  </span>
+                </p>
+              </div>
+            </section>
+            <footer className="modal-card-foot">
+              <button
+                className="button is-success"
+                onClick={this.handleSubscribe}>
+                Subscribe
+            </button>
+              <button
+                className="button"
+                onClick={this.handleClose}>
+                Cancel
+            </button>
+            </footer>
+          </div>
+        </div>
+      </div>
+      // <div>
+      //   <Button onClick={this.handleClickOpen}>Subscribe</Button>
+      //   <Dialog
+      //     open={this.state.open}
+      //     onClose={this.handleClose}
+      //     aria-labelledby="form-dialog-title"
+      //   >
+      //     <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+      //     <DialogContent>
+      //       <TextField
+      //         {...isEmailValid}
+      //         id="full-width"
+      //         label="Email"
+      //         // InputLabelProps={{
+      //         //   shrink: true,
+      //         // }}
+      //         fullWidth
+      //         margin="normal"
+      //         autoFocus={true}
+      //         onChange={this.enterEmail}
+      //       />
+      //       <TextField
+      //         id="full-width"
+      //         label="Username"
+      //         // InputLabelProps={{
+      //         //   shrink: true,
+      //         // }}
+      //         fullWidth
+      //         margin="normal"
+      //         onChange={this.enterUsername}
+      //       />
+      //       <TextField
+      //         id="full-width"
+      //         label="Password"
+      //         // InputLabelProps={{
+      //         //   shrink: true,
+      //         // }}
+      //         fullWidth
+      //         margin="normal"
+      //         type="password"
+      //         onChange={this.enterPassword}
+      //       />
+      //     </DialogContent>
+      //     <DialogActions>
+      //       <Button onClick={this.handleClose} >
+      //         Cancel
+      //       </Button>
+      //       <Button onClick={this.handleSubscribe} >
+      //         Subscribe
+      //       </Button>
+      //     </DialogActions>
+      //   </Dialog>
+      // </div >
     );
   }
 }

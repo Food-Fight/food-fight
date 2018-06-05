@@ -3,7 +3,7 @@ require('dotenv').config();
 const Sequelize = require('sequelize');
 
 // set up connection and create sequelize instance
-const sequelize = new Sequelize('foodfight', 'foodfighters', null, {
+const sequelize = new Sequelize('foodFightTest', 'beeb', 'admin', {
   host: 'localhost',
   port: process.env.DB_PORT,
   dialect: 'postgres',

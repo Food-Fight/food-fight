@@ -1,9 +1,24 @@
 const db = require('../database-postgresql/models');
 
+const saveMember = (email, password, zipcode = 78702, callback) => {
+  db.models.User.create({
+    email,
+    password,
+    zipcode,
+  })
+    .then((result) => {
+      callback(result);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 const saveMembers = (members, callback) => {
   members.forEach((user) => {
     db.models.User.create({
-      email: user,
+      email: user.email,
+      password: user.password,
       zipcode: 78702,
     })
       .then((result) => {
@@ -28,6 +43,4 @@ const saveRoom = (id, callback) => {
     });
 };
 
-module.exports.saveMembers = saveMembers;
-
-module.exports.saveRoom = saveRoom;
+module.exports = { saveMember, saveMembers, saveRoom };

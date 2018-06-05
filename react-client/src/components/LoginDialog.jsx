@@ -12,14 +12,14 @@ class LoginDialog extends React.Component {
     super(props);
     this.state = {
       open: false,
-      username: null,
+      email: null,
       password: null
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.googleLogin = this.googleLogin.bind(this);
-    this.enterUsername = this.enterUsername.bind(this);
+    this.enterUsername = this.enterEmail.bind(this);
     this.enterPassword = this.enterPassword.bind(this);
   }
 
@@ -39,9 +39,9 @@ class LoginDialog extends React.Component {
     });
   }
 
-  enterUsername(e) {
+  enterEmail(e) {
     this.setState({
-      username: e.target.value
+      email: e.target.value
     });
   }
 
@@ -106,7 +106,11 @@ class LoginDialog extends React.Component {
             <section className="modal-card-body">
               <div className="field">
                 <p className="control has-icons-left has-icons-right">
-                  <input className="input" type="email" placeholder="Email" />
+                  <input
+                    className="input"
+                    type="email"
+                    placeholder="Email"
+                    onChange={this.enterEmail} />
                   <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                   </span>
@@ -117,7 +121,12 @@ class LoginDialog extends React.Component {
               </div>
               <div className="field">
                 <p className="control has-icons-left">
-                  <input className="input" type="password" placeholder="Password" />
+                  <input
+                    className="input"
+                    type="password"
+                    placeholder="Password"
+                    onChange={this.enterPassword}
+                  />
                   <span className="icon is-small is-left">
                     <i className="fas fa-lock"></i>
                   </span>
@@ -128,8 +137,12 @@ class LoginDialog extends React.Component {
               <button className="button is-success">
                 Login
               </button>
-              <button className="button">
+              <button className="button"
+                onClick={this.handleClose}>
                 Cancel
+              </button>
+              <button className="button">
+                Login With Google
               </button>
             </footer>
           </div>
