@@ -11,6 +11,7 @@ const Mailjet = require('node-mailjet').connect(
 );
 
 const db = require('../database-postgresql/models');
+const helpers = require('../db-controllers');
 
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 // var items = require('../database-mysql');
@@ -44,10 +45,24 @@ app.post('/api/email', (req, res) => {
     });
 });
 
+// TO DO: Store this info in the database
 app.post('/api/save', (req, res) => {
   const { id, members } = req.body;
-  // TO DO: Store this info in the database
-  res.end(`Room ${id} saved`);
+  helpers.saveRoom(id, (err, room) => {
+    if (err) {
+      console.log('Error saving room', err);
+    } else {
+      console.log('Success', room);
+      helpers.saveMembers(members, (error, result) => {
+        if (error) {
+          console.log('Error saving room members to database', error);
+        } else {
+          console.log('Members saved!', result);
+        }
+      });
+      res.end(`Room ${id} saved`, room);
+    }
+  });
 });
 
 app.post('/api/search', (req, res) => {
