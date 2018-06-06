@@ -1,7 +1,7 @@
 import React from 'react';
 import LoginDialog from './Users/LoginDialog.jsx';
-import SubscribeDialog from './Users/SubscribeDialog.jsx';
-import UserMenu from './Users/UserMenu.jsx';
+import SubscribeDialog from './AuthUserMenu/SubscribeDialog.jsx';
+import UserMenu from './AuthUserMenu/UserMenu.jsx';
 
 class Navbar extends React.Component {
   constructor(props) {

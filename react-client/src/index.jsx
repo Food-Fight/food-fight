@@ -9,7 +9,8 @@ import Hero from './components/Hero.jsx';
 import RestaurantList from './components/RestaurantList.jsx';
 import CreateRoom from './components/CreateRoom.jsx';
 import Room from './components/Room.jsx';
-import SearchUsersPanel from './components/SearchUsersPanel.jsx'
+import SearchUsersPanel from './components/SearchInvite/SearchUsersPanel.jsx';
+import InviteUser from './components/SearchInvite/InviteUser.jsx';
 
 import 'bulma/css/bulma.css';
 import 'animate.css/animate.css';
@@ -25,6 +26,8 @@ class App extends React.Component {
       loggedIn: false,
       loggedInUsername: null,
       loginError: false,
+
+      searchedUsers: []
     };
   }
 
@@ -59,6 +62,10 @@ class App extends React.Component {
     this.setState({
       query: e.target.value,
     });
+  }
+
+  searchUsers(email) {
+
   }
 
   //
@@ -138,9 +145,12 @@ class App extends React.Component {
           error={this.state.loginError} />
         <Hero />
         <div id="site-body" className="tile is-ancestor">
-          <SearchUsersPanel></SearchUsersPanel>
+          <div className="tile is-parent is-vertical">
+            <SearchUsersPanel />
+            <InviteUser />
+          </div>
           <div className="tile is-parent is-vertical is-8">
-            <section className="tile is-child notification create-room-container">
+            <article className="tile is-child notification create-room-container">
               <h2 className="is-secondary title is-3"> Create A Room</h2>
               <BrowserRouter>
                 <div className="container">
@@ -149,7 +159,7 @@ class App extends React.Component {
                   <Route path="/rooms/:roomID" component={Room} />
                 </div>
               </BrowserRouter>
-            </section>
+            </article>
           </div>
         </div>
       </div >

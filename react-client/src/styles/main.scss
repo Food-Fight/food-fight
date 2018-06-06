@@ -9,6 +9,14 @@
 //     background-color: $grey;
 // }
 
+article {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+nav {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 1px 3px rgba(0,0,0,0.23);
+}
+
 #logo {
     font-family: 'Kalam', cursive;
     font-size: 40px;
@@ -16,12 +24,11 @@
 }
 
 #site-body {
-  height: 600px;
+  height: 800px;
   margin: 10px;
 }
 
 .create-room-container {
-  height: 600px;
   background-color: $grey;
 }
 
