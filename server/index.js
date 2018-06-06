@@ -3,27 +3,97 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const session = require('express-session');
 const request = require('request');
+const passport = require('passport');
+const flash = require('flash');
+const auth = require('../lib/auth');
+const morgan = require('morgan');
 
 const Mailjet = require('node-mailjet').connect(
   process.env.MAILJET_API_KEY,
   process.env.MAILJET_API_SECRET,
 );
 
-const db = require('../database-postgresql/models');
+const db = require('../database-postgresql/models/index');
 const helpers = require('../db-controllers');
-
-// UNCOMMENT THE DATABASE YOU'D LIKE TO USE
-// var items = require('../database-mysql');
-// var items = require('../database-mongo');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(express.static(`${__dirname}/../react-client/dist`));
+app.use(morgan('dev'));
 
+
+//
+// ─── AUTHENTICAITON MIDDLEWARE ──────────────────────────────────────────────────
+//
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: false,
+  },
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+auth.passportHelper(passport);
+app.use(flash());
+
+app.use((req, res, next) => {
+  console.log(req.session);
+  next();
+});
+
+//
+// ─── GOOGLE OAUTH ENDPOINTS ─────────────────────────────────────────────────────
+//
+app.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'],
+  }),
+);
+
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req, res) => {
+    res.redirect('/');
+  },
+);
+
+
+//
+// ─── LOCAL AUTH ENDPOINTS ───────────────────────────────────────────────────────
+//
+app.get('/checklogin', (req, res) => {
+  res.status(200).send(req.session.passport);
+});
+
+app.post('/subscribe', passport.authenticate('local-signup', {
+  successRedirect: '/',
+  failureFlash: true,
+}), (req, res) => {
+  res.status(200).send(req.session.passport);
+});
+
+app.post('/login', passport.authenticate('local-login', {
+  successRedirect: '/',
+  failureFlash: true,
+}));
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
+
+
+//
+// ─── SERVE EMAILS ───────────────────────────────────────────────────────────────
+//
 app.post('/api/email', (req, res) => {
   console.log('Received request to send email to', req.body.email);
   const { email, id } = req.body;
@@ -45,6 +115,10 @@ app.post('/api/email', (req, res) => {
     });
 });
 
+
+//
+// ─── API LOGIC ──────────────────────────────────────────────────────────────────
+//
 // TO DO: Store this info in the database
 app.post('/api/save', (req, res) => {
   const { id, members } = req.body;
@@ -88,6 +162,8 @@ app.post('/api/search', (req, res) => {
     res.send(JSON.parse(data.body));
   });
 });
+// ────────────────────────────────────────────────────────────────────────────────
+
 
 // Sets up default case so that any URL not handled by the Express Router
 // will be handled by the React Router
