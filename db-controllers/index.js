@@ -1,9 +1,15 @@
 const db = require('../database-postgresql/models');
+const bcrypt = require('bcrypt');
 
-const saveMember = (email, password, zipcode = 78702, callback) => {
+const saveMember = (email, password, zipcode, callback) => {
+  let hashedPW;
+  if (password) {
+    const salt = bcrypt.genSaltSync(3);
+    hashedPW = bcrypt.hashSync(password, salt);
+  }
   db.models.User.create({
     email,
-    password,
+    password: hashedPW,
     zipcode,
   })
     .then((result) => {

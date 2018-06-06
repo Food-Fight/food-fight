@@ -66,6 +66,13 @@ class SubscribeDialog extends React.Component {
   }
 
   render() {
+    console.log('ERROR', this.props.error);
+    const loginError = this.props.error ? (
+      <DialogContentText id="login-error">
+        That user does not exist.
+      </DialogContentText>
+    ) : null;
+
     let isEmailValid = this.state.emailValid ? null : {
       error: true,
       helperText: 'Please enter a valid email address'
@@ -73,25 +80,20 @@ class SubscribeDialog extends React.Component {
 
     // Toggle show modal
     const isActive = this.state.open ? (
-      { className: 'modal is-active' }
-    ) : { className: 'modal' };
+      { className: 'modal is-active animated fadeIn' }
+    ) : { className: 'modal animated fadeIn' };
 
     return (
       <div>
         <a className="button is-primary" onClick={this.handleClickOpen}>
-          <span className="icon">
-            <i className="fas fa-user"></i>
-          </span>
-          <span>
-            Subscribe
-          </span>
+          Sign Up
         </a>
         <div {...isActive} >
           <div className="modal-background"></div>
           <div className="modal-card">
             <header className="modal-card-head">
               <p className="modal-card-title">
-                Subscribe
+                Sign Up
             </p>
               <button
                 className="delete"
@@ -132,7 +134,7 @@ class SubscribeDialog extends React.Component {
               <button
                 className="button is-success"
                 onClick={this.handleSubscribe}>
-                Subscribe
+                Go!
             </button>
               <button
                 className="button"
@@ -142,7 +144,7 @@ class SubscribeDialog extends React.Component {
             </footer>
           </div>
         </div>
-      </div>
+      </div >
       // <div>
       //   <Button onClick={this.handleClickOpen}>Subscribe</Button>
       //   <Dialog

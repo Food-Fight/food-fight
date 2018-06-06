@@ -3,11 +3,11 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const session = require('express-session');
 const request = require('request');
 const passport = require('passport');
 const flash = require('flash');
 const auth = require('../lib/auth');
-const session = require('express-session');
 const morgan = require('morgan');
 
 const Mailjet = require('node-mailjet').connect(
@@ -18,27 +18,12 @@ const Mailjet = require('node-mailjet').connect(
 const db = require('../database-postgresql/models/index');
 const helpers = require('../db-controllers');
 
-// UNCOMMENT THE DATABASE YOU'D LIKE TO USE
-// var items = require('../database-mysql');
-// var items = require('../database-mongo');
-
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/../react-client/dist`));
 app.use(morgan('dev'));
-
-
-// ────────────────────────────────────────────────────────────────────────────────
-// THIS NEEDS TO BE HERE FOR PASSPORT TO WORK
-// PLEASE DO NOT TOUCH (IT'S A DUMB WORKAROUND)
-app.use((req, res, next) => {
-  console.log('REQUEST BODY', req.body);
-  req.body = req.body.params;
-  next();
-});
-// ────────────────────────────────────────────────────────────────────────────────
 
 
 //
@@ -48,20 +33,27 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: { },
+  cookie: {
+    secure: false,
+  },
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 auth.passportHelper(passport);
 app.use(flash());
 
-
+app.use((req, res, next) => {
+  console.log(req.session);
+  next();
+});
 //
 // ─── GOOGLE OAUTH ENDPOINTS ─────────────────────────────────────────────────────
 //
 app.get(
   '/auth/google',
-  passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }),
+  passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'],
+  }),
 );
 
 app.get(

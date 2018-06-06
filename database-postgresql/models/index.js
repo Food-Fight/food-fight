@@ -8,6 +8,7 @@ const sequelize = new Sequelize('foodFightTest', 'beeb', 'admin', {
   port: process.env.DB_PORT,
   dialect: 'postgres',
   operatorsAliases: false,
+  logging: false,
   // dialectOptions: {
   //   ssl: true,
   // },

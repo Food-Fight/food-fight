@@ -11,6 +11,7 @@ import CreateRoom from './components/CreateRoom.jsx';
 import Room from './components/Room.jsx';
 
 import 'bulma/css/bulma.css';
+import 'animate.css/animate.css';
 import './styles/main.scss';
 
 class App extends React.Component {
@@ -65,10 +66,8 @@ class App extends React.Component {
   subscribe(email, password) {
     console.log(`Subscribe with ${email} and ${password}`);
     axios.post('/subscribe', {
-      params: {
-        email,
-        password
-      }
+      email,
+      password
     })
       .then(
         this.setState({
@@ -79,7 +78,7 @@ class App extends React.Component {
   }
 
   login(email, password) {
-    console.log(`Login with ${username} and ${password}`);
+    console.log(`Login with ${email} and ${password}`);
     axios.post('/login', {
       email,
       password
@@ -87,10 +86,10 @@ class App extends React.Component {
       .then(res => {
         console.log('DATA', res);
         if (res.config.data) {
-          console.log('Logged in as:', JSON.parse(res.config.data).username);
+          console.log('Logged in as:', JSON.parse(res.config.data).email);
           this.setState({
             loggedIn: true,
-            loggedInUsername: JSON.parse(res.config.data).username
+            loggedInUsername: JSON.parse(res.config.data).email
           });
         }
       })
@@ -114,6 +113,8 @@ class App extends React.Component {
         });
       })
   }
+  // ────────────────────────────────────────────────────────────────────────────────
+
 
   render() {
     return (

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 // import Button from '@material-ui/core/Button';
 // import TextField from '@material-ui/core/TextField';
 // import Dialog from '@material-ui/core/Dialog';
@@ -18,8 +19,7 @@ class LoginDialog extends React.Component {
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
-    this.googleLogin = this.googleLogin.bind(this);
-    this.enterUsername = this.enterEmail.bind(this);
+    this.enterEmail = this.enterEmail.bind(this);
     this.enterPassword = this.enterPassword.bind(this);
   }
 
@@ -55,39 +55,21 @@ class LoginDialog extends React.Component {
     // this.setState({
     //   open: false
     // });
-    this.props.login(this.state.username, this.state.password);
+    this.props.login(this.state.email, this.state.password);
   }
-
-  googleLogin() {
-    this.setState({
-      open: false
-    });
-    this.props.googleLogin();
-  }
-
 
   //
   // ─── RENDER ─────────────────────────────────────────────────────────────────────
   //
   render() {
-    console.log('ERROR', this.props.error);
-    const loginError = this.props.error ? (
-      <DialogContentText id="login-error">
-        That user does not exist.
-      </DialogContentText>
-    ) : null;
-
     // Toggle show modal
     const isActive = this.state.open ? (
-      { className: 'modal is-active' }
-    ) : { className: 'modal' };
+      { className: 'modal is-active animated fadeIn' }
+    ) : { className: 'modal animated fadeIn' };
 
     return (
       <div>
         <a className="button is-primary" onClick={this.handleClickOpen}>
-          <span className="icon">
-            <i className="fas fa-user"></i>
-          </span>
           <span>Login</span>
         </a>
         <div {...isActive} >
@@ -104,6 +86,13 @@ class LoginDialog extends React.Component {
               ></button>
             </header>
             <section className="modal-card-body">
+              <a href="/auth/google">
+                <button
+                  className="loginBtn loginBtn--google">
+                  Login with Google
+                </button>
+              </a>
+              <hr />
               <div className="field">
                 <p className="control has-icons-left has-icons-right">
                   <input
@@ -134,15 +123,15 @@ class LoginDialog extends React.Component {
               </div>
             </section>
             <footer className="modal-card-foot">
-              <button className="button is-success">
-                Login
+              <button
+                className="button is-success"
+                onClick={this.handleLogin}>
+                Go!
               </button>
-              <button className="button"
+              <button
+                className="button"
                 onClick={this.handleClose}>
                 Cancel
-              </button>
-              <button className="button">
-                Login With Google
               </button>
             </footer>
           </div>
