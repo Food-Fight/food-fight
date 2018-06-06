@@ -69,12 +69,20 @@ class App extends React.Component {
       email,
       password
     })
-      .then(
+      .then((res) => {
+        const email = JSON.parse(res.config.data).email;
+        if (res) {
+          this.setState({
+            loggedIn: true,
+            loggedInUsername: email
+          })
+        }
+      })
+      .catch(() => {
         this.setState({
-          loggedIn: true,
-          loggedInUsername: email
-        }))
-      .catch(console.log);
+          loginError: true
+        })
+      });
   }
 
   login(email, password) {
@@ -139,21 +147,6 @@ class App extends React.Component {
         </section>
       </div>
     );
-
-    //TO DO: Figure out where to put this
-    //
-    //   <div>
-    //     <h1>Food Fight</h1>
-    //     Enter a zip code:
-    //     <input
-    //       type="text"
-    //       value={this.state.query}
-    //       onChange={this.updateQuery.bind(this)}
-    //     />{" "}
-    //     <button onClick={this.searchYelp.bind(this)}> Search </button>
-    //     <RestaurantList restaurants={this.state.restaurants} />
-    //   </div>
-    // )
   }
 }
 

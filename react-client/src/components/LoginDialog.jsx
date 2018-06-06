@@ -124,14 +124,14 @@ class LoginDialog extends React.Component {
             </section>
             <footer className="modal-card-foot">
               <button
-                className="button is-success"
-                onClick={this.handleLogin}>
-                Go!
-              </button>
-              <button
                 className="button"
                 onClick={this.handleClose}>
                 Cancel
+              </button>
+              <button
+                className="button is-success"
+                onClick={this.handleLogin}>
+                Go!
               </button>
             </footer>
           </div>

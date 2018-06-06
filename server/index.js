@@ -46,6 +46,7 @@ app.use((req, res, next) => {
   console.log(req.session);
   next();
 });
+
 //
 // ─── GOOGLE OAUTH ENDPOINTS ─────────────────────────────────────────────────────
 //
@@ -75,7 +76,9 @@ app.get('/checklogin', (req, res) => {
 app.post('/subscribe', passport.authenticate('local-signup', {
   successRedirect: '/',
   failureFlash: true,
-}));
+}), (req, res) => {
+  res.status(200).send(req.session.passport);
+});
 
 app.post('/login', passport.authenticate('local-login', {
   successRedirect: '/',

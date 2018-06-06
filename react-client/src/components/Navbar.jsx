@@ -14,15 +14,15 @@ class Navbar extends React.Component {
         logout={this.props.logout}
         username={this.props.username} />
     ) : (
-        [<p className="control">
+        [<div className="control">
           <LoginDialog
             login={this.props.login}
             error={this.props.error} />
-        </p>,
-        <p className="control">
+        </div>,
+        <div className="control">
           <SubscribeDialog
             subscribe={this.props.subscribe} />
-        </p>]
+        </div>]
       );
 
     return (

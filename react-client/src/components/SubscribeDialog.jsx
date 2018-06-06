@@ -132,14 +132,14 @@ class SubscribeDialog extends React.Component {
             </section>
             <footer className="modal-card-foot">
               <button
-                className="button is-success"
-                onClick={this.handleSubscribe}>
-                Go!
-            </button>
-              <button
                 className="button"
                 onClick={this.handleClose}>
                 Cancel
+              </button>
+              <button
+                className="button is-success"
+                onClick={this.handleSubscribe}>
+                Go!
             </button>
             </footer>
           </div>

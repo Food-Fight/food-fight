@@ -15,6 +15,15 @@
     padding: 5px 0px 0px 10px;
 }
 
+.modal-card-body {
+  text-align: center;
+}
+
+.modal-card-foot .button:not(:last-child) {
+  margin: auto;
+  margin-right: 10px;
+}
+
 /* GOOGLE LOGIN BUTTON */
 .loginBtn {
     box-sizing: border-box;
