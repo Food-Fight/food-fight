@@ -15,7 +15,7 @@ const Mailjet = require('node-mailjet').connect(
   process.env.MAILJET_API_SECRET,
 );
 
-const db = require('../database-postgresql/models/index');
+// const db = require('../database-postgresql/models/index');
 const helpers = require('../db-controllers');
 
 const app = express();
@@ -172,8 +172,8 @@ app.get('*', (req, res) => {
 });
 
 // create the tables based on the models and once done, listen on the given port
-db.models.sequelize.sync().then(() => {
+// db.models.sequelize.sync().then(() => {
   app.listen(process.env.PORT || 3000, () => {
     console.log('listening on port', process.env.PORT || 3000);
   });
-});
+// });
