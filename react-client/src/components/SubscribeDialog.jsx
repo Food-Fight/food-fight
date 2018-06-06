@@ -1,11 +1,4 @@
 import React from 'react';
-// import Button from '@material-ui/core/Button';
-// import TextField from '@material-ui/core/TextField';
-// import Dialog from '@material-ui/core/Dialog';
-// import DialogActions from '@material-ui/core/DialogActions';
-// import DialogContent from '@material-ui/core/DialogContent';
-// import DialogContentText from '@material-ui/core/DialogContentText';
-// import DialogTitle from '@material-ui/core/DialogTitle';
 import validator from 'validator';
 
 class SubscribeDialog extends React.Component {
@@ -14,16 +7,23 @@ class SubscribeDialog extends React.Component {
     this.state = {
       open: false,
       email: null,
-      password: null,
       emailValid: false,
+      password: null,
+      zip: null,
+      zipValid: false,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubscribe = this.handleSubscribe.bind(this);
     this.enterEmail = this.enterEmail.bind(this);
     this.enterPassword = this.enterPassword.bind(this);
+    this.enterZip = this.enterZip.bind(this);
   }
 
+
+  //
+  // ─── METHODS ────────────────────────────────────────────────────────────────────
+  //
   handleClickOpen() {
     this.setState({
       open: true
@@ -56,15 +56,35 @@ class SubscribeDialog extends React.Component {
     });
   }
 
+  enterZip(e) {
+    if ((/(^\d{5}$)|(^\d{5}-\d{4}$)/).test(String(e.target.value))) {
+      this.setState({
+        zip: e.target.value,
+        zipValid: true
+      });
+    } else {
+      this.setState({
+        zip: null,
+        zipValid: false
+      });
+    }
+  }
+
   handleSubscribe() {
+    console.log('ZIP', this.state.zip);
     this.setState({
       open: false
     });
     this.props.subscribe(
       this.state.email,
-      this.state.password);
+      this.state.password,
+      this.state.zip);
   }
 
+
+  //
+  // ─── RENDER ─────────────────────────────────────────────────────────────────────
+  //
   render() {
     console.log('ERROR', this.props.error);
     const loginError = this.props.error ? (
@@ -73,15 +93,32 @@ class SubscribeDialog extends React.Component {
       </DialogContentText>
     ) : null;
 
-    let isEmailValid = this.state.emailValid ? null : {
-      error: true,
-      helperText: 'Please enter a valid email address'
-    };
-
     // Toggle show modal
     const isActive = this.state.open ? (
       { className: 'modal is-active animated fadeIn' }
     ) : { className: 'modal animated fadeIn' };
+
+    // Validate email field
+    let isEmailValid1 = this.state.emailValid ? (
+      { className: 'input is-success' }
+    ) : { className: 'input is-danger' };
+
+    let isEmailValid2 = this.state.emailValid ? null : (
+      <p className="help is-danger">
+        Please enter a valid email address.
+      </p>
+    );
+
+    // Validate zip field
+    let isZipValid1 = this.state.zipValid ? (
+      { className: 'input is-success' }
+    ) : { className: 'input is-danger' };
+
+    let isZipValid2 = this.state.zipValid ? null : (
+      <p className="help is-danger">
+        Please enter a valid zip code.
+      </p>
+    );
 
     return (
       <div>
@@ -103,31 +140,44 @@ class SubscribeDialog extends React.Component {
             </header>
             <section className="modal-card-body">
               <div className="field">
-                <p className="control has-icons-left has-icons-right">
+                <label class="label">Email</label>
+                <div className="control has-icons-left">
                   <input
-                    className="input"
+                    {...isEmailValid1}
                     type="email"
-                    placeholder="Email"
+                    placeholder="johndoe@gmail.com"
                     onChange={this.enterEmail} />
                   <span className="icon is-small is-left">
                     <i className="fas fa-envelope"></i>
                   </span>
-                  <span className="icon is-small is-right">
-                    <i className="fas fa-check"></i>
-                  </span>
-                </p>
+                </div>
+                {isEmailValid2}
               </div>
               <div className="field">
+                <label class="label">Password</label>
                 <p className="control has-icons-left">
                   <input
                     className="input"
                     type="password"
-                    placeholder="Password"
+                    placeholder="password123"
                     onChange={this.enterPassword} />
                   <span className="icon is-small is-left">
                     <i className="fas fa-lock"></i>
                   </span>
                 </p>
+              </div>
+              <div className="field">
+                <label class="label">Homebase</label>
+                <p className="control has-icons-left">
+                  <input
+                    {...isZipValid1}
+                    placeholder="zip code (78701)"
+                    onChange={this.enterZip} />
+                  <span className="icon is-small is-left">
+                    <i className="fas fa-home"></i>
+                  </span>
+                </p>
+                {isZipValid2}
               </div>
             </section>
             <footer className="modal-card-foot">
@@ -145,59 +195,6 @@ class SubscribeDialog extends React.Component {
           </div>
         </div>
       </div >
-      // <div>
-      //   <Button onClick={this.handleClickOpen}>Subscribe</Button>
-      //   <Dialog
-      //     open={this.state.open}
-      //     onClose={this.handleClose}
-      //     aria-labelledby="form-dialog-title"
-      //   >
-      //     <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
-      //     <DialogContent>
-      //       <TextField
-      //         {...isEmailValid}
-      //         id="full-width"
-      //         label="Email"
-      //         // InputLabelProps={{
-      //         //   shrink: true,
-      //         // }}
-      //         fullWidth
-      //         margin="normal"
-      //         autoFocus={true}
-      //         onChange={this.enterEmail}
-      //       />
-      //       <TextField
-      //         id="full-width"
-      //         label="Username"
-      //         // InputLabelProps={{
-      //         //   shrink: true,
-      //         // }}
-      //         fullWidth
-      //         margin="normal"
-      //         onChange={this.enterUsername}
-      //       />
-      //       <TextField
-      //         id="full-width"
-      //         label="Password"
-      //         // InputLabelProps={{
-      //         //   shrink: true,
-      //         // }}
-      //         fullWidth
-      //         margin="normal"
-      //         type="password"
-      //         onChange={this.enterPassword}
-      //       />
-      //     </DialogContent>
-      //     <DialogActions>
-      //       <Button onClick={this.handleClose} >
-      //         Cancel
-      //       </Button>
-      //       <Button onClick={this.handleSubscribe} >
-      //         Subscribe
-      //       </Button>
-      //     </DialogActions>
-      //   </Dialog>
-      // </div >
     );
   }
 }

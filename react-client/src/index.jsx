@@ -63,11 +63,12 @@ class App extends React.Component {
   //
   // ─── USER AUTH ──────────────────────────────────────────────────────────────────
   //
-  subscribe(email, password) {
+  subscribe(email, password, zip) {
     console.log(`Subscribe with ${email} and ${password}`);
     axios.post('/subscribe', {
       email,
-      password
+      password,
+      zip
     })
       .then((res) => {
         const email = JSON.parse(res.config.data).email;
