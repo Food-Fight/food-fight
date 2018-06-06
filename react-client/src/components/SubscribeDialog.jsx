@@ -171,7 +171,7 @@ class SubscribeDialog extends React.Component {
                 <p className="control has-icons-left">
                   <input
                     {...isZipValid1}
-                    placeholder="zip code (78701)"
+                    placeholder="78701"
                     onChange={this.enterZip} />
                   <span className="icon is-small is-left">
                     <i className="fas fa-home"></i>
