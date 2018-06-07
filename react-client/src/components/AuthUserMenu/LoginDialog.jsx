@@ -5,8 +5,8 @@ class LoginDialog extends React.Component {
     super(props);
     this.state = {
       open: false,
-      email: null,
-      password: null,
+      email: '',
+      password: '',
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);

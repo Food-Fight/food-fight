@@ -64,8 +64,15 @@ class App extends React.Component {
     });
   }
 
-  searchUsers(email) {
-
+  searchUsers(query) {
+    console.log('SEARCHING FOR', query);
+    axios.post('/searchUsers', { query })
+      .then(res => {
+        console.log('RESULTS', res);
+        this.setState({
+          searchedUsers: res.data
+        });
+      });
   }
 
   //
@@ -146,7 +153,9 @@ class App extends React.Component {
         <Hero />
         <div id="site-body" className="tile is-ancestor">
           <div className="tile is-parent is-vertical">
-            <SearchUsersPanel />
+            <SearchUsersPanel
+              searchUsers={this.searchUsers.bind(this)}
+              foundUsers={this.state.searchedUsers} />
             <InviteUser />
           </div>
           <div className="tile is-parent is-vertical is-8">

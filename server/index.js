@@ -16,7 +16,9 @@ const Mailjet = require('node-mailjet').connect(
 );
 
 const db = require('../database-postgresql/models/index');
-const helpers = require('../db-controllers');
+const dbHelpers = require('../db-controllers');
+
+const { Op } = db;
 
 const app = express();
 
@@ -41,11 +43,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 auth.passportHelper(passport);
 app.use(flash());
-
-app.use((req, res, next) => {
-  console.log(req.session);
-  next();
-});
 
 //
 // ─── GOOGLE OAUTH ENDPOINTS ─────────────────────────────────────────────────────
@@ -92,6 +89,22 @@ app.get('/logout', (req, res) => {
 
 
 //
+// ─── USER SEARCH AND INVITE ─────────────────────────────────────────────────────
+//
+app.post('/searchUsers', (req, res) => {
+  console.log(req.body.query);
+  db.models.User.findAll({
+    where: {
+      email: {
+        [Op.regexp]: req.body.query,
+      },
+    },
+  })
+    .then(matches => res.status(200).send(matches))
+    .catch(err => res.status(200).send(err));
+});
+
+//
 // ─── SERVE EMAILS ───────────────────────────────────────────────────────────────
 //
 app.post('/api/email', (req, res) => {
@@ -122,12 +135,12 @@ app.post('/api/email', (req, res) => {
 // TO DO: Store this info in the database
 app.post('/api/save', (req, res) => {
   const { id, members } = req.body;
-  helpers.saveRoom(id, (err, room) => {
+  dbHelpers.saveRoom(id, (err, room) => {
     if (err) {
       console.log('Error saving room', err);
     } else {
       console.log('Success', room);
-      helpers.saveMembers(members, (error, result) => {
+      dbHelpers.saveMembers(members, (error, result) => {
         if (error) {
           console.log('Error saving room members to database', error);
         } else {
