@@ -9,6 +9,7 @@ const passport = require('passport');
 const flash = require('flash');
 const auth = require('../lib/auth');
 const morgan = require('morgan');
+const socket = require('socket.io');
 
 const Mailjet = require('node-mailjet').connect(
   process.env.MAILJET_API_KEY,
@@ -181,7 +182,17 @@ app.get('*', (req, res) => {
 
 // create the tables based on the models and once done, listen on the given port
 db.models.sequelize.sync().then(() => {
-  app.listen(process.env.PORT || 3000, () => {
+  const server = app.listen(process.env.PORT || 3000, () => {
     console.log('listening on port', process.env.PORT || 3000);
   });
+
+  const io = socket(server);
+  io.on('connection', (socket) => {
+    console.log('made socket connection', socket.id);
+
+    socket.on('chat', (data) => {
+      console.log('Received chat!', data);
+      io.sockets.emit('chat', data);
+    })
+  })
 });
