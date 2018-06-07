@@ -1,4 +1,5 @@
 import React from 'react';
+import SearchResult from './SearchResult.jsx';
 
 class SearchUsersPanel extends React.Component {
   constructor(props) {
@@ -17,7 +18,14 @@ class SearchUsersPanel extends React.Component {
   }
 
   render() {
-    console.log('FOUND USERS', this.props.foundUsers)
+    const usersFound = this.props.foundUsers.length ? (
+      this.props.foundUsers.map(user => (
+        <SearchResult user={user} />
+      ))
+    ) : (
+        <p>No results found.</p>
+      )
+
     return (
       <article className="tile is-child notification">
         <div className="content">
@@ -40,11 +48,9 @@ class SearchUsersPanel extends React.Component {
                 </a>
               </div>
             </div>
-            <ul>
-              {this.props.foundUsers.map(user => {
-                return <li>{user.email}</li>
-              })}
-            </ul>
+            <div>
+              {usersFound}
+            </div>
           </div>
         </div>
       </article >

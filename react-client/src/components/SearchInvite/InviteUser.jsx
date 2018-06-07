@@ -32,7 +32,7 @@ class InviteUser extends React.Component {
     return (
       <article className="tile is-child notification">
         <div className="content">
-          <p className="title">Invite User</p>
+          <p className="title">Invite Users</p>
           <div className="content">
             <div className="field has-addons">
               <div className="control is-expanded">

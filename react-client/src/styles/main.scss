@@ -56,6 +56,21 @@ nav {
   color: white;
 }
 
+.search-result {
+  border-bottom: 3px solid white;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-search-button {
+  float: right;
+}
+
+.search-result p.user-search-email {
+  margin-bottom: 0px;
+}
+
 /* GOOGLE LOGIN BUTTON */
 .loginBtn {
     box-sizing: border-box;

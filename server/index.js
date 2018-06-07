@@ -94,6 +94,7 @@ app.get('/logout', (req, res) => {
 app.post('/searchUsers', (req, res) => {
   console.log(req.body.query);
   db.models.User.findAll({
+    limit: 5,
     where: {
       email: {
         [Op.regexp]: req.body.query,
