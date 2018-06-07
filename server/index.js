@@ -148,6 +148,18 @@ app.post('/api/save', (req, res) => {
   });
 });
 
+app.post('/api/roomInfo', (req, res) => {
+  const { roomID } = req.body;
+  dbHelpers.getRoomMembers(roomID, (err, roomMembers) => {
+    if (err) {
+      console.log('Error getting room members', err);
+    } else {
+      console.log('Room members fetched!', roomMembers);
+      res.send(roomMembers);
+    }
+  });
+});
+
 app.post('/api/search', (req, res) => {
   console.log('Received request for Yelp search of', req.body);
   const { zip } = req.body;
