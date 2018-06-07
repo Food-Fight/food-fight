@@ -1,5 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
+import $ from 'jquery';
 
 class Room extends React.Component {
   constructor(props) {
@@ -8,6 +9,8 @@ class Room extends React.Component {
       name: '',
       message: '',
       latestMessage: {},
+      members: [],
+      zipcode: ''
     }
     this.roomID = this.props.match.params.roomID;
 
@@ -22,7 +25,17 @@ class Room extends React.Component {
     });
   }
 
-//TO DO: Get room information from the database
+  // Send post request to server to fetch room info when user visits link
+  componentDidMount() {
+    $.post('/api/roomInfo', { roomID: this.roomID })
+    .then((roomMembers) => {
+        console.log('GOT ROOM MEMEBRS', roomMembers);
+        this.setState({
+          members: roomMembers,
+          zipcode: roomMembers[0].zipcode,
+        });
+      });
+  }
 
   sendMessage() {
     this.socket.emit('chat', {
@@ -49,8 +62,14 @@ class Room extends React.Component {
   render() {
     return (
       <div>
-          Welcome to room {this.roomID}    
-          {/* TO DO: Render room information to the page */}
+          Welcome to room {this.roomID}
+          <div>
+          {/* Need to figure out how we're going to display room members and zipcode */}
+          Members: {this.state.members.map((user) => <span>{user.email} </span>)}
+          </div>
+          <div>
+          Zipcode: {this.state.zipcode}
+          </div>
           <h3>Name</h3>
           {/* This input field is just temporary. Ideally the name will be obtained from login*/}
           <div><input type="text"
