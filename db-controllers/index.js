@@ -20,33 +20,37 @@ const saveMember = (email, password, zipcode, callback) => {
     });
 };
 
-const saveMembers = (members, callback) => {
-  members.forEach((user) => {
-    db.models.User.create({
-      email: user.email,
-      password: user.password,
-      zipcode: 78702,
-    })
-      .then((result) => {
-        callback(null, result);
-      })
-      .catch((error) => {
-        callback(error);
-      });
+const saveRoomAndMembers = (roomID, members, callback) => {
+  const promisedMembers = members.map((memberEmail) => {
+    return db.models.User.findOrCreate({
+      where: {
+        email: memberEmail,
+        zipcode: 78702,
+      },
+    });
   });
-};
 
-const saveRoom = (id, callback) => {
-  db.models.Room.create({
-    uniqueid: id,
-    zipcode: 78702,
+  db.models.Room.findOrCreate({
+    where: {
+      uniqueid: roomID,
+      zipcode: 78702,
+    },
   })
-    .then((result) => {
-      callback(null, result);
+    .then((room) => {
+      Promise.all(promisedMembers)
+        .then((users) => {
+          users.forEach((user) => {
+            room[0].addUser(user[0]);
+          });
+          callback(null, room, users);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     })
     .catch((error) => {
-      callback(error);
+      console.log(error);
     });
 };
 
-module.exports = { saveMember, saveMembers, saveRoom };
+module.exports = { saveMember, saveRoomAndMembers };
