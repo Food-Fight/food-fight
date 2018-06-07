@@ -9,12 +9,16 @@ class Room extends React.Component {
       message: '',
       latestMessage: {},
     }
-    this.socket = io.connect(`${process.env.DOMAIN || 'http://localhost'}:${process.env.PORT || 3000}`);
-    this.socket.on('chat', (message) => {
-      console.log('Received message', message);
-      this.setState({
-        latestMessage: message,
-      });
+    this.roomID = this.props.match.params.roomID;
+
+    this.socket = io.connect(process.env.PORT);
+    this.socket.on('chat', (data) => {
+      if (data.roomID === this.roomID) {
+        console.log('Received message', data.message);
+        this.setState({
+          latestMessage: data.message,
+        });
+      }
     });
   }
 
@@ -22,8 +26,11 @@ class Room extends React.Component {
 
   sendMessage() {
     this.socket.emit('chat', {
-      name: this.state.name,
-      message: this.state.message,
+      message: {
+        name: this.state.name,
+        message: this.state.message,
+      },
+      roomID: this.roomID,
     });
   }
 
@@ -42,9 +49,10 @@ class Room extends React.Component {
   render() {
     return (
       <div>
-          Welcome to room {this.props.match.params.roomID}    
+          Welcome to room {this.roomID}    
           {/* TO DO: Render room information to the page */}
           <h3>Name</h3>
+          {/* This input field is just temporary. Ideally the name will be obtained from login*/}
           <div><input type="text"
                 value={this.state.name}
                 onChange={this.updateName.bind(this)}></input></div>
@@ -53,6 +61,7 @@ class Room extends React.Component {
                       value={this.state.message}
                       onChange={this.updateMessage.bind(this)}></input></div>
           <button onClick={this.sendMessage.bind(this)}>Send</button>
+          {/* This is temporary and just for testing. Ideally the messages will be stored in the database */}
           <h3>Latest Message</h3> 
            <strong>{ this.state.latestMessage.name } </strong> {this.state.latestMessage.message}
       </div>
