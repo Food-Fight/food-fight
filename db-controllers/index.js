@@ -21,14 +21,12 @@ const saveMember = (email, password, zipcode, callback) => {
 };
 
 const saveRoomAndMembers = (roomID, members, callback) => {
-  const promisedMembers = members.map((memberEmail) => {
-    return db.models.User.findOrCreate({
-      where: {
-        email: memberEmail,
-        zipcode: 78702,
-      },
-    });
-  });
+  const promisedMembers = members.map(memberEmail => db.models.User.findOrCreate({
+    where: {
+      email: memberEmail,
+      zipcode: 78702,
+    },
+  }));
 
   db.models.Room.findOrCreate({
     where: {
@@ -53,4 +51,21 @@ const saveRoomAndMembers = (roomID, members, callback) => {
     });
 };
 
-module.exports = { saveMember, saveRoomAndMembers };
+const getRoomMembers = (roomID, callback) => {
+  db.models.User.findAll({
+    attributes: ['email', 'zipcode'],
+    include: [{
+      model: db.models.Room,
+      where: { uniqueid: roomID },
+    }],
+  })
+    .then((users) => {
+      console.log('Success getting users');
+      callback(null, users);
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
+module.exports = { saveMember, saveRoomAndMembers, getRoomMembers };
