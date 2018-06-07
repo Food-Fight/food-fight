@@ -188,8 +188,8 @@ app.get('*', (req, res) => {
 });
 
 // create the tables based on the models and once done, listen on the given port
-db.models.sequelize.sync().then(() => {
+// db.models.sequelize.sync().then(() => {
   app.listen(process.env.PORT || 3000, () => {
     console.log('listening on port', process.env.PORT || 3000);
   });
-});
+// });
