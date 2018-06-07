@@ -1,24 +1,23 @@
 import React from 'react';
+import $ from 'jquery';
+import Invitation from './Invitation.jsx';
 
-class InviteUser extends React.Component {
+
+class InviteUsers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       query: '',
       emails: [],
     }
+    this.inviteAll = this.inviteAll.bind(this);
   }
 
   addEmail() {
+    // console.log(this.state.query);
     this.state.emails.push(this.state.query);
     this.setState({
       query: '',
-    });
-  }
-
-  sendInvite(email) {
-    $.post('/api/email', { email: email, id: this.state.roomID }, (data, status) => {
-      console.log(`Email sent to ${email}:`, status);
     });
   }
 
@@ -28,7 +27,24 @@ class InviteUser extends React.Component {
     });
   }
 
+  sendInvite(email) {
+    $.post('/api/email', { email: email },
+      (data, status) => {
+        console.log(`Email sent to ${email}:`, status);
+      });
+  }
+
+  inviteAll() {
+    this.state.emails.forEach(address => {
+      this.sendInvite(address);
+    });
+    this.setState({
+      emails: []
+    });
+  }
+
   render() {
+    console.log(this.state.emails);
     return (
       <article className="tile is-child notification">
         <div className="content">
@@ -49,9 +65,15 @@ class InviteUser extends React.Component {
                 </a>
               </div>
             </div>
-            {this.state.emails.map((email, index) => {
-              return <li key={index}>Invitation will be sent to {email}</li>;
+            {this.state.emails.map((email) => {
+              return <Invitation email={email} />
             })}
+            <a
+              id="send-invites"
+              className="button is-info is-rounded"
+              onClick={this.inviteAll}>
+              Invite All
+            </a>
           </div>
         </div>
       </article>
@@ -59,4 +81,4 @@ class InviteUser extends React.Component {
   }
 }
 
-export default InviteUser;
+export default InviteUsers;

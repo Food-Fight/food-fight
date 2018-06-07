@@ -32,6 +32,12 @@ nav {
   margin: 10px;
 }
 
+#send-invites {
+  position: absolute;
+  right: 30px;
+  bottom: 20px;
+}
+
 .create-room-container {
   background-color: $grey;
 }
@@ -70,6 +76,8 @@ nav {
 .search-result p.user-search-email {
   margin-bottom: 0px;
 }
+
+
 
 /* GOOGLE LOGIN BUTTON */
 .loginBtn {

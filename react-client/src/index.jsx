@@ -10,7 +10,7 @@ import RestaurantList from './components/RestaurantList.jsx';
 import CreateRoom from './components/CreateRoom.jsx';
 import Room from './components/Room.jsx';
 import SearchUsersPanel from './components/SearchInvite/SearchUsersPanel.jsx';
-import InviteUser from './components/SearchInvite/InviteUser.jsx';
+import InviteUsers from './components/SearchInvite/InviteUsers.jsx';
 
 import 'bulma/css/bulma.css';
 import 'animate.css/animate.css';
@@ -156,7 +156,7 @@ class App extends React.Component {
             <SearchUsersPanel
               searchUsers={this.searchUsers.bind(this)}
               foundUsers={this.state.searchedUsers} />
-            <InviteUser />
+            <InviteUsers />
           </div>
           <div className="tile is-parent is-vertical is-8">
             <article className="tile is-child notification create-room-container">
