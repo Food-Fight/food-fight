@@ -5,15 +5,15 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 // set up connection and create sequelize instance
-const sequelize = new Sequelize('foodFightTest', 'beeb', 'admin', {
-  host: 'localhost',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,
-  // dialectOptions: {
-  //   ssl: true,
-  // },
+  dialectOptions: {
+    ssl: true,
+  },
 });
 
 // testing connection

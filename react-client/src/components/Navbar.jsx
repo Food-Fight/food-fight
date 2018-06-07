@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginDialog from './Users/LoginDialog.jsx';
+import LoginDialog from './AuthUserMenu/LoginDialog.jsx';
 import SubscribeDialog from './AuthUserMenu/SubscribeDialog.jsx';
 import UserMenu from './AuthUserMenu/UserMenu.jsx';
 
