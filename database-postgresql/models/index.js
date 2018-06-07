@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const Sequelize = require('sequelize');
 
+const Op = Sequelize.Op;
+
 // set up connection and create sequelize instance
 const sequelize = new Sequelize('foodFightTest', 'beeb', 'admin', {
   host: 'localhost',
@@ -41,3 +43,4 @@ models.sequelize = sequelize;
 models.Sequelize = Sequelize;
 
 module.exports.models = models;
+module.exports.Op = Op;
