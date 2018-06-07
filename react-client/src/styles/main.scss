@@ -2,17 +2,49 @@
 @import 'helpers';
 @import url('https://fonts.googleapis.com/css?family=Kalam:700');
 
-.create-room-container {
-    margin-top: 25px;
-    margin-left: 10px;
-    padding: 20px;
-    background-color: $grey;
+// .create-room-container {
+//     margin-top: 25px;
+//     margin-left: 10px;
+//     padding: 20px;
+//     background-color: $grey;
+// }
+
+article {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+nav {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 1px 3px rgba(0,0,0,0.23);
+}
+
+div.notification.is-danger {
+  padding: 5px;
+  margin: 0px;
+}
+
+#site-body p.title {
+  margin-bottom: 10px;
 }
 
 #logo {
     font-family: 'Kalam', cursive;
     font-size: 40px;
     padding: 5px 0px 0px 10px;
+}
+
+#site-body {
+  height: 800px;
+  margin: 10px;
+}
+
+#send-invites {
+  position: absolute;
+  right: 30px;
+  bottom: 20px;
+}
+
+.create-room-container {
+  background-color: $grey;
 }
 
 .google-button-container {
@@ -23,6 +55,34 @@
   margin: auto;
   margin-right: 10px;
 }
+
+.section.login-error {
+  background-color: $red;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.subtitle {
+  color: white;
+}
+
+.search-result {
+  border-bottom: 3px solid white;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-search-button {
+  float: right;
+}
+
+.search-result p.user-search-email {
+  margin-bottom: 0px;
+}
+
+
 
 /* GOOGLE LOGIN BUTTON */
 .loginBtn {
@@ -56,7 +116,7 @@
   }
   .loginBtn--google {
     /*font-family: "Roboto", Roboto, arial, sans-serif;*/
-    background: #DD4B39;
+    background: $red;
   }
   .loginBtn--google:before {
     border-right: #BB3F30 1px solid;
@@ -64,7 +124,7 @@
   }
   .loginBtn--google:hover,
   .loginBtn--google:focus {
-    background: #E74B37;
+    background: $red;
     cursor: pointer
   }
   /*END GOOGLE LOGIN BUTTON*/

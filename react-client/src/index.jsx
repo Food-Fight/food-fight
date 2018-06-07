@@ -9,6 +9,8 @@ import Hero from './components/Hero.jsx';
 import RestaurantList from './components/RestaurantList.jsx';
 import CreateRoom from './components/CreateRoom.jsx';
 import Room from './components/Room.jsx';
+import SearchUsersPanel from './components/SearchInvite/SearchUsersPanel.jsx';
+import InviteUsers from './components/SearchInvite/InviteUsers.jsx';
 
 import 'bulma/css/bulma.css';
 import 'animate.css/animate.css';
@@ -24,6 +26,8 @@ class App extends React.Component {
       loggedIn: false,
       loggedInUsername: null,
       loginError: false,
+
+      searchedUsers: []
     };
   }
 
@@ -58,6 +62,17 @@ class App extends React.Component {
     this.setState({
       query: e.target.value,
     });
+  }
+
+  searchUsers(query) {
+    console.log('SEARCHING FOR', query);
+    axios.post('/searchUsers', { query })
+      .then(res => {
+        console.log('RESULTS', res);
+        this.setState({
+          searchedUsers: res.data
+        });
+      });
   }
 
   //
@@ -136,17 +151,27 @@ class App extends React.Component {
           username={this.state.loggedInUsername}
           error={this.state.loginError} />
         <Hero />
-        <section className="create-room-container">
-          <h2 className="is-secondary title is-3"> Create A Room</h2>
-          <BrowserRouter>
-            <div className="container">
-              <Route exact path="/" component={CreateRoom} />
-              {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
-              <Route path="/rooms/:roomID" component={Room} />
-            </div>
-          </BrowserRouter>
-        </section>
-      </div>
+        <div id="site-body" className="tile is-ancestor">
+          <div className="tile is-parent is-vertical">
+            <SearchUsersPanel
+              searchUsers={this.searchUsers.bind(this)}
+              foundUsers={this.state.searchedUsers} />
+            <InviteUsers />
+          </div>
+          <div className="tile is-parent is-vertical is-8">
+            <article className="tile is-child notification create-room-container">
+              <h2 className="is-secondary title is-3"> Create A Room</h2>
+              <BrowserRouter>
+                <div className="container">
+                  <Route exact path="/" component={CreateRoom} />
+                  {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
+                  <Route path="/rooms/:roomID" component={Room} />
+                </div>
+              </BrowserRouter>
+            </article>
+          </div>
+        </div>
+      </div >
     );
   }
 }
