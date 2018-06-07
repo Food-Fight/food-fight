@@ -135,22 +135,14 @@ app.post('/api/email', (req, res) => {
 //
 // ─── API LOGIC ──────────────────────────────────────────────────────────────────
 //
-// TO DO: Store this info in the database
 app.post('/api/save', (req, res) => {
   const { id, members } = req.body;
-  dbHelpers.saveRoom(id, (err, room) => {
+  dbHelpers.saveRoomAndMembers(id, members, (err, room, users) => {
     if (err) {
-      console.log('Error saving room', err);
+      console.log('Error saving room and members', err);
     } else {
-      console.log('Success', room);
-      dbHelpers.saveMembers(members, (error, result) => {
-        if (error) {
-          console.log('Error saving room members to database', error);
-        } else {
-          console.log('Members saved!', result);
-        }
-      });
-      res.end(`Room ${id} saved`, room);
+      console.log('Room and members saved!', room, users);
+      res.end(`Room ${id} saved`);
     }
   });
 });
