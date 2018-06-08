@@ -1,13 +1,15 @@
 import React from 'react';
 
 const RestaurantListItem = props => (
-  <div>
-    {console.log(props.restaurant.name)}
-    {/* <img src={props.restaurant.image_url} />
-    Categories:{' '} */}
-    {/* {props.restaurant.categories.map(category => {
-      return <li>{category.title}</li>;
-    })} */}
+  <div className="Resturant-list-item">
+    <h4>{props.restaurant.name}</h4>
+    <img src={props.restaurant.image_url} className="resturant-img hidden" />
+    Categories:{' '}
+    <ul>
+      {props.restaurant.categories.map(category => {
+        return <li>{category.title}</li>;
+      })}
+    </ul>
   </div>
 );
 

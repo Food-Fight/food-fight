@@ -27,7 +27,10 @@ class RestaurantList extends React.Component {
   render() {
     return (
       <div>
-        <h3>sup</h3>
+        {this.state.restaurants.map(restaurant => {
+          console.log(restaurant);
+          return <RestaurantListItem restaurant={restaurant} />;
+        })}
       </div>
     );
   }
