@@ -205,6 +205,6 @@ db.models.sequelize.sync().then(() => {
     socket.on('chat', (data) => {
       console.log('Received chat!', data);
       io.sockets.emit('chat', data);
-    })
-  })
+    });
+  });
 });

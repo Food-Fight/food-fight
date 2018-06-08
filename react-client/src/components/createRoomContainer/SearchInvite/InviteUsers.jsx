@@ -69,7 +69,6 @@ class InviteUsers extends React.Component {
     // Validate email entry
     const checkEmailValid = () => {
       if (this.state.input.length === 0) {
-        console.log('THISSSSSSS');
         return { className: 'input' };
       } else if (this.state.emailValid) {
         return { className: 'input is-success' };

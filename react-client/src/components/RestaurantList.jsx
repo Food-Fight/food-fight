@@ -20,17 +20,9 @@ class RestaurantList extends React.Component {
     });
   }
 
-<<<<<<< HEAD
-const RestaurantList = (props) => (
-  <div>
-    {props.restaurants.map(restaurant => <RestaurantListItem restaurant={restaurant} />)}
-  </div>
-)
-=======
   componentDidMount() {
     this.searchYelp();
   }
->>>>>>> 3c75fd3cd8337c1d654279c633cefebc9c41829d
 
   render() {
     return (

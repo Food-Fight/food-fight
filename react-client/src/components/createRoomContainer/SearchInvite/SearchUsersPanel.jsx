@@ -14,13 +14,16 @@ class SearchUsersPanel extends React.Component {
   enterQuery(e) {
     this.setState({
       query: e.target.value,
-    })
+    });
   }
 
   render() {
     const usersFound = this.props.foundUsers.length ? (
-      this.props.foundUsers.map(user => (
-        <SearchResult user={user} />
+      this.props.foundUsers.map((user, i) => (
+        <SearchResult
+          key={i}
+          user={user}
+          addCombatant={this.props.addCombatant} />
       ))
     ) : (
         <p>No results found.</p>
