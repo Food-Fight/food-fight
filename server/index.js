@@ -236,13 +236,7 @@ db.models.sequelize.sync().then(() => {
 
     newSocket.on('chat', (data) => {
       console.log('Received chat!', data);
-<<<<<<< HEAD
       io.sockets.emit('chat', data.roomID);
     });
   })
-=======
-      io.sockets.emit('chat', data);
-    });
-  });
->>>>>>> 41336af1a73b7f05d655b262a668eca28c2c43e3
 });
