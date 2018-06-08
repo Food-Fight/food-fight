@@ -1,6 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
-import uniqueString from 'unique-string';
+// import uniqueString from 'unique-string';
 import CombatantsContainer from './CombatantsContainer.jsx';
 
 class CreateRoom extends React.Component {
@@ -15,21 +15,24 @@ class CreateRoom extends React.Component {
   }
 
   createRoom() {
-    this.state.emails.forEach(email => this.sendInvite(email));
     $.post(
       '/api/save',
-      { id: this.state.roomID, members: this.state.emails, zip: this.state.zipCode },
+      {
+        roomName: this.state.roomName,
+        zip: this.state.zipCode,
+        members: this.props.combatants
+      },
       (data, status) => {
         console.log(`Room ${this.state.roomID} saved to the database:`, status);
       },
     );
   }
 
-  createUniqueID() {
-    this.setState({
-      roomID: uniqueString(),
-    });
-  }
+  // createUniqueID() {
+  //   this.setState({
+  //     roomID: uniqueString(),
+  //   });
+  // }
 
   updateQuery(e) {
     this.setState({
