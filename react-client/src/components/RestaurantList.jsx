@@ -28,7 +28,7 @@ class RestaurantList extends React.Component {
     return (
       <div>
         {this.state.restaurants.map(restaurant => {
-          return <RestaurantListItem restaurant={restaurant} />;
+          return <RestaurantListItem restaurant={restaurant} nominate={this.props.nominate}/>;
         })}
       </div>
     );
