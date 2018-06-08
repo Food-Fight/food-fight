@@ -92,7 +92,7 @@ class InviteUsers extends React.Component {
       <article className="tile is-child notification">
         <div className="content">
           <p className="title">
-            Invite Users
+            Invite Warriors
           </p>
           <div className="content">
             <div className="field has-addons">

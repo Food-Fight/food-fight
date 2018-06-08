@@ -108,7 +108,7 @@ app.post('/searchUsers', (req, res) => {
 
 
 //
-// ─── SERVE EMAILS ───────────────────────────────────────────────────────────────
+// ─── SERVE EMAIL INVITATIONS ────────────────────────────────────────────────────
 //
 app.post('/api/email', (req, res) => {
   console.log('Received request to send email to', req.body.email);

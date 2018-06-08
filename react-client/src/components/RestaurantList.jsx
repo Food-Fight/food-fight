@@ -3,7 +3,7 @@ import RestaurantListItem from './RestaurantListItem.jsx';
 
 const RestaurantList = (props) => (
   <div>
-    { props.restaurants.map(restaurant => <RestaurantListItem restaurant={restaurant}/>)}
+    {props.restaurants.map(restaurant => <RestaurantListItem restaurant={restaurant} />)}
   </div>
 )
 

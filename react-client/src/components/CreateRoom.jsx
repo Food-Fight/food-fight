@@ -7,16 +7,8 @@ class CreateRoom extends React.Component {
     super(props);
     this.state = {
       query: '',
-      emails: [],
       roomID: null,
     };
-  }
-
-  addEmail() {
-    this.state.emails.push(this.state.query);
-    this.setState({
-      query: '',
-    });
   }
 
   createRoom() {
@@ -32,12 +24,6 @@ class CreateRoom extends React.Component {
     });
   }
 
-  sendInvite(email) {
-    $.post('/api/email', { email: email, id: this.state.roomID }, (data, status) => {
-      console.log(`Email sent to ${email}:`, status);
-    });
-  }
-
   updateQuery(e) {
     this.setState({
       query: e.target.value,
@@ -48,34 +34,35 @@ class CreateRoom extends React.Component {
     var uniqueURL = this.state.roomID
       ? `https://food-fight-greenfield.herokuapp.com/rooms/${this.state.roomID}`
       : '';
+
     return (
       <div>
         <div>
+          <div className="field">
+            <div className="field-label is-large">
+              <label id="arena-lable" className="label">
+                NAME YOUR ARENA
+                </label>
+            </div>
+            <div className="control has-icons-left">
+              <input className="input is-large" type="text" placeholder="Large input" />
+              <span className="icon is-small is-left">
+                <i className="fas fa-skull"></i>
+              </span>
+            </div>
+          </div>
           <button onClick={this.createUniqueID.bind(this)} className="button is-normal is-info">
-            Create a Unique URL{' '}
+            Create a Unique URL
           </button>
           {uniqueURL}
         </div>
-        <div className="column is-half">
-          <input
-            type="email"
-            value={this.state.query}
-            onChange={this.updateQuery.bind(this)}
-            className="input is-large is-half"
-            placeholder="Email"
-          />{' '}
-          <button onClick={this.addEmail.bind(this)} className="button">
-            {' '}
-            Invite{' '}
-          </button>
-          {this.state.emails.map((email, index) => {
-            return <li key={index}>Invitation will be sent to {email}</li>;
-          })}
-        </div>
-        <div>
+        <div id="create-room-footer">
           <div className="is-divider" />
-          <button onClick={this.createRoom.bind(this)} className="button is-primary is-normal">
-            Create Room
+          <button
+            id="fight-button"
+            onClick={this.createRoom.bind(this)}
+            className="button is-primary is-large is-fullwidth">
+            Fight!
           </button>
         </div>
       </div>

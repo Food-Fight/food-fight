@@ -162,7 +162,7 @@ class App extends React.Component {
             <article className="tile is-child notification create-room-container">
               <h2 className="is-secondary title is-3"> Create A Room</h2>
               <BrowserRouter>
-                <div className="container">
+                <div>
                   <Route exact path="/" component={CreateRoom} />
                   {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
                   <Route path="/rooms/:roomID" component={Room} />

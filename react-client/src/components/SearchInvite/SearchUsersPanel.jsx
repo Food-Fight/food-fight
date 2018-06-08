@@ -29,7 +29,7 @@ class SearchUsersPanel extends React.Component {
     return (
       <article className="tile is-child notification">
         <div className="content">
-          <p className="title">Find Users</p>
+          <p className="title">Find Fighters</p>
           <div className="content">
             <div className="field has-addons">
               <div className="control is-expanded">
