@@ -53,4 +53,27 @@ const saveRoomAndMembers = (roomID, members, callback) => {
     });
 };
 
+const saveMessage = (name, message, roomID, callback) => {
+  let hashedPW;
+  if (password) {
+    const salt = bcrypt.genSaltSync(3);
+    hashedPW = bcrypt.hashSync(password, salt);
+  }
+  db.models.User.create({
+    email,
+    password: hashedPW,
+    zipcode,
+  })
+    .then((result) => {
+      callback(result);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const getMessages = (roomID, callback) => {
+
+}
+
 module.exports = { saveMember, saveRoomAndMembers };
