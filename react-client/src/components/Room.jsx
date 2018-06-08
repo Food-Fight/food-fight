@@ -66,13 +66,14 @@ class Room extends React.Component {
         {/* <div className="is-divider" /> */}
         <div className="columns">
           <div id="yelp-list" className="column">
-            <h3>Local Resturants</h3>
+            <h3 className="is-size-3">Local Resturants</h3>
             <RestaurantList zipcode={this.state.zipcode} />
           </div>
           <div id="current-resturant" className="column">
-            <h3>Current Selection</h3>
+            <h3 className="is-size-3">Current Selection</h3>
           </div>
           <div id="chat" className="column">
+            <h3 className="is-size-3">Chat</h3>
             <div>
               {/* Need to figure out how we're going to display room members and zipcode */}
               Members: {this.state.members.map(user => <span>{user.email} </span>)}
