@@ -52,26 +52,30 @@ const saveRoomAndMembers = (roomID, members, callback) => {
 };
 
 const saveMessage = (name, message, roomID, callback) => {
-  let hashedPW;
-  if (password) {
-    const salt = bcrypt.genSaltSync(3);
-    hashedPW = bcrypt.hashSync(password, salt);
-  }
-  db.models.User.create({
-    email,
-    password: hashedPW,
-    zipcode,
+  console.log('Saving message', name, message, roomID);
+  db.models.Message.create({
+    name,
+    message,
+    room_id: roomID,
   })
-    .then((result) => {
-      callback(result);
+    .then(() => {
+      callback(null);
     })
     .catch((error) => {
-      console.log(error);
+      callback(error);
     });
 };
 
 const getMessages = (roomID, callback) => {
-
+  db.models.Message.findAll({
+    where: { room_id: roomID },
+  })
+    .then((results) => {
+      callback(null, results);
+    })
+    .catch((error) => {
+      callback(error);
+    });
 }
 
 const getRoomMembers = (roomID, callback) => {
@@ -93,4 +97,4 @@ const getRoomMembers = (roomID, callback) => {
     });
 };
 
-module.exports = { saveMember, saveRoomAndMembers, getRoomMembers };
+module.exports = { saveMember, saveRoomAndMembers, getRoomMembers, saveMessage, getMessages };

@@ -142,22 +142,22 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <Navbar
-          login={this.login.bind(this)}
-          logout={this.logout.bind(this)}
-          subscribe={this.subscribe.bind(this)}
-          loggedIn={this.state.loggedIn}
-          username={this.state.loggedInUsername}
-          error={this.state.loginError} />
-        <Hero />
-        <div id="site-body" className="tile is-ancestor">
-          <div className="tile is-parent is-vertical">
-            <SearchUsersPanel
-              searchUsers={this.searchUsers.bind(this)}
-              foundUsers={this.state.searchedUsers} />
-            <InviteUsers />
-          </div>
+      // <div>
+      //   <Navbar
+      //     login={this.login.bind(this)}
+      //     logout={this.logout.bind(this)}
+      //     subscribe={this.subscribe.bind(this)}
+      //     loggedIn={this.state.loggedIn}
+      //     username={this.state.loggedInUsername}
+      //     error={this.state.loginError} />
+      //   <Hero />
+      //   <div id="site-body" className="tile is-ancestor">
+      //     <div className="tile is-parent is-vertical">
+      //       <SearchUsersPanel
+      //         searchUsers={this.searchUsers.bind(this)}
+      //         foundUsers={this.state.searchedUsers} />
+      //       <InviteUsers />
+      //     </div>
           <div className="tile is-parent is-vertical is-8">
             <article className="tile is-child notification create-room-container">
               <h2 className="is-secondary title is-3"> Create A Room</h2>
@@ -170,8 +170,8 @@ class App extends React.Component {
               </BrowserRouter>
             </article>
           </div>
-        </div>
-      </div >
+      //   </div>
+      // </div >
     );
   }
 }

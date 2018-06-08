@@ -183,6 +183,33 @@ app.post('/api/search', (req, res) => {
     res.send(JSON.parse(data.body));
   });
 });
+
+app.post('/api/saveMessage', (req, res) => {
+  const { message, roomID } = req.body;
+  dbHelpers.saveMessage(message.name, message.message, roomID, (err) => {
+    if (err) {
+      console.log('Error saving message', err);
+      res.status(404).end();
+    } else {
+      console.log(`Message saved- ${message.name}: ${message.message}`);
+      res.end(`Message saved- ${message.name}: ${message.message}`);
+    }
+  });
+});
+
+app.post('/api/messageInfo', (req, res) => {
+  const { roomID } = req.body;
+  dbHelpers.getMessages(roomID, (err, results) => {
+    if (err) {
+      console.log('Error retrieving messages', err);
+      res.status(404).end();
+    } else {
+      console.log('Messages retrieved!', roomID);
+      res.send(results);
+    }
+  });
+});
+
 // ────────────────────────────────────────────────────────────────────────────────
 
 
@@ -199,12 +226,12 @@ db.models.sequelize.sync().then(() => {
   });
 
   const io = socket(server);
-  io.on('connection', (socket) => {
-    console.log('made socket connection', socket.id);
+  io.on('connection', (newSocket) => {
+    console.log('made socket connection', newSocket.id);
 
-    socket.on('chat', (data) => {
+    newSocket.on('chat', (data) => {
       console.log('Received chat!', data);
-      io.sockets.emit('chat', data);
-    })
+      io.sockets.emit('chat', data.roomID);
+    });
   })
 });
