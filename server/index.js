@@ -9,6 +9,7 @@ const passport = require('passport');
 const flash = require('flash');
 const auth = require('../lib/auth');
 const morgan = require('morgan');
+const socket = require('socket.io');
 
 const Mailjet = require('node-mailjet').connect(
   process.env.MAILJET_API_KEY,
@@ -135,22 +136,26 @@ app.post('/api/email', (req, res) => {
 //
 // ─── API LOGIC ──────────────────────────────────────────────────────────────────
 //
-// TO DO: Store this info in the database
 app.post('/api/save', (req, res) => {
   const { id, members } = req.body;
-  dbHelpers.saveRoom(id, (err, room) => {
+  dbHelpers.saveRoomAndMembers(id, members, (err, room, users) => {
     if (err) {
-      console.log('Error saving room', err);
+      console.log('Error saving room and members', err);
     } else {
-      console.log('Success', room);
-      dbHelpers.saveMembers(members, (error, result) => {
-        if (error) {
-          console.log('Error saving room members to database', error);
-        } else {
-          console.log('Members saved!', result);
-        }
-      });
-      res.end(`Room ${id} saved`, room);
+      console.log('Room and members saved!', room, users);
+      res.end(`Room ${id} saved`);
+    }
+  });
+});
+
+app.post('/api/roomInfo', (req, res) => {
+  const { roomID } = req.body;
+  dbHelpers.getRoomMembers(roomID, (err, roomMembers) => {
+    if (err) {
+      console.log('Error getting room members', err);
+    } else {
+      console.log('Room members fetched!', roomMembers);
+      res.send(roomMembers);
     }
   });
 });
@@ -189,7 +194,17 @@ app.get('*', (req, res) => {
 
 // create the tables based on the models and once done, listen on the given port
 db.models.sequelize.sync().then(() => {
-  app.listen(process.env.PORT || 3000, () => {
+  const server = app.listen(process.env.PORT || 3000, () => {
     console.log('listening on port', process.env.PORT || 3000);
   });
+
+  const io = socket(server);
+  io.on('connection', (socket) => {
+    console.log('made socket connection', socket.id);
+
+    socket.on('chat', (data) => {
+      console.log('Received chat!', data);
+      io.sockets.emit('chat', data);
+    })
+  })
 });

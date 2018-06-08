@@ -20,33 +20,54 @@ const saveMember = (email, password, zipcode, callback) => {
     });
 };
 
-const saveMembers = (members, callback) => {
-  members.forEach((user) => {
-    db.models.User.create({
-      email: user.email,
-      password: user.password,
+const saveRoomAndMembers = (roomID, members, callback) => {
+  const promisedMembers = members.map(memberEmail => db.models.User.findOrCreate({
+    where: {
+      email: memberEmail,
       zipcode: 78702,
+    },
+  }));
+
+  db.models.Room.findOrCreate({
+    where: {
+      uniqueid: roomID,
+      zipcode: 78702,
+    },
+  })
+    .then((room) => {
+      Promise.all(promisedMembers)
+        .then((users) => {
+          users.forEach((user) => {
+            room[0].addUser(user[0]);
+          });
+          callback(null, room, users);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     })
-      .then((result) => {
-        callback(null, result);
-      })
-      .catch((error) => {
-        callback(error);
-      });
-  });
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
-const saveRoom = (id, callback) => {
-  db.models.Room.create({
-    uniqueid: id,
-    zipcode: 78702,
+const getRoomMembers = (roomID, callback) => {
+  db.models.User.findAll({
+    attributes: ['email', 'zipcode'],
+    include: [{
+      model: db.models.Room,
+      where: { uniqueid: roomID },
+      attributes: [],
+      through: { attributes: [] },
+    }],
   })
-    .then((result) => {
-      callback(null, result);
+    .then((users) => {
+      console.log('Success getting users', users);
+      callback(null, users);
     })
     .catch((error) => {
       callback(error);
     });
 };
 
-module.exports = { saveMember, saveMembers, saveRoom };
+module.exports = { saveMember, saveRoomAndMembers, getRoomMembers };
