@@ -9,6 +9,7 @@ class CreateRoom extends React.Component {
       query: '',
       emails: [],
       roomID: null,
+      zipCode: '',
     };
   }
 
@@ -21,9 +22,13 @@ class CreateRoom extends React.Component {
 
   createRoom() {
     this.state.emails.forEach(email => this.sendInvite(email));
-    $.post('/api/save', { id: this.state.roomID, members: this.state.emails }, (data, status) => {
-      console.log(`Room ${this.state.roomID} saved to the database:`, status);
-    });
+    $.post(
+      '/api/save',
+      { id: this.state.roomID, members: this.state.emails, zip: this.state.zipCode },
+      (data, status) => {
+        console.log(`Room ${this.state.roomID} saved to the database:`, status);
+      },
+    );
   }
 
   createUniqueID() {
@@ -44,6 +49,12 @@ class CreateRoom extends React.Component {
     });
   }
 
+  updateZip(e) {
+    this.setState({
+      zipCode: e.target.value,
+    });
+  }
+
   render() {
     var uniqueURL = this.state.roomID
       ? `https://food-fight-greenfield.herokuapp.com/rooms/${this.state.roomID}`
@@ -57,6 +68,15 @@ class CreateRoom extends React.Component {
           {uniqueURL}
         </div>
         <div className="column is-half">
+          <input
+            type="text"
+            pattern="[0-9]{5}"
+            title="Five digit zip code"
+            value={this.state.zipCode}
+            onChange={this.updateZip.bind(this)}
+            className="input is-large is-half"
+            placeholder="Zip Code"
+          />{' '}
           <input
             type="email"
             value={this.state.query}
