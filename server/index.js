@@ -109,7 +109,7 @@ app.post('/searchUsers', (req, res) => {
 
 
 //
-// ─── SERVE EMAILS ───────────────────────────────────────────────────────────────
+// ─── SERVE EMAIL INVITATIONS ────────────────────────────────────────────────────
 //
 app.post('/api/email', (req, res) => {
   console.log('Received request to send email to', req.body.email);
@@ -134,11 +134,12 @@ app.post('/api/email', (req, res) => {
 
 
 //
-// ─── API LOGIC ──────────────────────────────────────────────────────────────────
+// ─── CREATE ROOMS AND GET ROOM INFO ─────────────────────────────────────────────
 //
 app.post('/api/save', (req, res) => {
-  const { id, members } = req.body;
-  dbHelpers.saveRoomAndMembers(id, members, (err, room, users) => {
+  console.log('NEW ROOM DATA', req.body);
+  const { roomName, zip, members } = req.body;
+  dbHelpers.saveRoomAndMembers(roomName, zip, members, (err, room, users) => {
     if (err) {
       console.log('Error saving room and members', err);
     } else {
@@ -160,6 +161,10 @@ app.post('/api/roomInfo', (req, res) => {
   });
 });
 
+
+//
+// ─── EXTERNAL API LOGIC ─────────────────────────────────────────────────────────
+//
 app.post('/api/search', (req, res) => {
   console.log('Received request for Yelp search of', req.body);
   const { zip } = req.body;
@@ -231,7 +236,13 @@ db.models.sequelize.sync().then(() => {
 
     newSocket.on('chat', (data) => {
       console.log('Received chat!', data);
+<<<<<<< HEAD
       io.sockets.emit('chat', data.roomID);
     });
   })
+=======
+      io.sockets.emit('chat', data);
+    });
+  });
+>>>>>>> 41336af1a73b7f05d655b262a668eca28c2c43e3
 });

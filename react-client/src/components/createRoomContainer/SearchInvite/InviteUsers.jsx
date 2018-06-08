@@ -69,7 +69,6 @@ class InviteUsers extends React.Component {
     // Validate email entry
     const checkEmailValid = () => {
       if (this.state.input.length === 0) {
-        console.log('THISSSSSSS');
         return { className: 'input' };
       } else if (this.state.emailValid) {
         return { className: 'input is-success' };
@@ -92,7 +91,7 @@ class InviteUsers extends React.Component {
       <article className="tile is-child notification">
         <div className="content">
           <p className="title">
-            Invite Users
+            Invite Warriors
           </p>
           <div className="content">
             <div className="field has-addons">

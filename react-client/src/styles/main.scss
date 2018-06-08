@@ -13,6 +13,10 @@ article {
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
+article.combatants {
+  background-color: white;
+}
+
 nav {
   box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 1px 3px rgba(0,0,0,0.23);
 }
@@ -43,6 +47,22 @@ div.notification.is-danger {
   bottom: 20px;
 }
 
+#fight-button {
+  background: $yellow;
+}
+
+#arena-lable {
+  text-align: center;
+}
+
+#create-room-error {
+  color: white;
+}
+
+.tile.is-child.notification.combatants {
+  margin-bottom: 10px !important;
+}
+
 .create-room-container {
   background-color: $grey;
 }
@@ -69,6 +89,13 @@ div.notification.is-danger {
 
 .search-result {
   border-bottom: 3px solid white;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.combatant {
+  border-bottom: 3px solid $blue;
   padding: 10px 0px 10px 0px;
   display: flex;
   justify-content: space-between;
