@@ -2,6 +2,7 @@ import React from 'react';
 import io from 'socket.io-client';
 import $ from 'jquery';
 import RestaurantList from './RestaurantList.jsx';
+import CurrentSelection from './CurrentSelection.jsx';
 
 class Room extends React.Component {
   constructor(props) {
@@ -12,8 +13,15 @@ class Room extends React.Component {
       latestMessage: {},
       members: [],
       zipcode: '75020', //hardcoding zip for testing
+      currentSelection: undefined,
+      isNominating: true,
     };
     this.roomID = this.props.match.params.roomID;
+
+    this.nominateRestaurant = this.nominateRestaurant.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.voteApprove = this.voteApprove.bind(this);
+    this.voteVeto = this.voteVeto.bind(this);
 
     this.socket = io.connect(process.env.PORT);
     this.socket.on('chat', data => {
@@ -35,6 +43,17 @@ class Room extends React.Component {
         zipcode: roomMembers[0].zipcode,
       });
     });
+  }
+
+  nominateRestaurant(restaurant) {
+    if (this.state.isNominating) {
+      // TO DO: Record in databse that previous restaurant was vetoed
+      this.setState({
+        currentSelection: restaurant,
+        isNominating: false,
+      });
+      // TO DO: Update database with current selection
+    }
   }
 
   sendMessage() {
@@ -59,18 +78,37 @@ class Room extends React.Component {
     });
   }
 
+  voteApprove() {
+    /* TO DO: Check if a user has already voted for 
+    the given restaurant to prevent duplicate votes */
+    
+    //TO DO: Update vote number in the database
+  }
+
+  voteVeto() {
+    this.setState({
+      isNominating: true,
+      currentSelection: undefined,
+    });
+  }
+
   render() {
+    let currentSelection = this.state.currentSelection
+      ? <CurrentSelection restaurant={this.state.currentSelection} />
+      : <div>Please nominate a restaurant</div>
     return (
       <div>
-        Welcome to room {this.roomID}
         {/* <div className="is-divider" /> */}
         <div className="columns">
           <div id="yelp-list" className="column">
             <h3 className="is-size-3">Local Resturants</h3>
-            <RestaurantList zipcode={this.state.zipcode} />
+            <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant}/>
           </div>
           <div id="current-resturant" className="column">
             <h3 className="is-size-3">Current Selection</h3>
+            {currentSelection}
+            <button onClick={this.voteApprove}>Approve</button>
+            <button onClick={this.voteVeto}>Veto</button>
           </div>
           <div id="chat" className="column">
             <h3 className="is-size-3">Chat</h3>
@@ -86,11 +124,7 @@ class Room extends React.Component {
             </div>
             <h3>Message</h3>
             <div>
-              <input
-                type="text"
-                value={this.state.message}
-                onChange={this.updateMessage.bind(this)}
-              />
+              <input type="text" value={this.state.message} onChange={this.updateMessage.bind(this)} />
             </div>
             <button onClick={this.sendMessage.bind(this)}>Send</button>
             {/* This is temporary and just for testing. Ideally the messages will be stored in the database */}
