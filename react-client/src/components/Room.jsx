@@ -1,6 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
 import $ from 'jquery';
+import RestaurantList from './RestaurantList.jsx';
 
 class Room extends React.Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class Room extends React.Component {
       message: '',
       latestMessage: {},
       members: [],
-      zipcode: '',
+      zipcode: '75020', //hardcoding zip for testing
     };
     this.roomID = this.props.match.params.roomID;
 
@@ -66,6 +67,7 @@ class Room extends React.Component {
         <div className="columns">
           <div id="yelp-list" className="column">
             <h3>Local Resturants</h3>
+            <RestaurantList zipcode={this.state.zipcode} />
           </div>
           <div id="current-resturant" className="column">
             <h3>Current Selection</h3>
