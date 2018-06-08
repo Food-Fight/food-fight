@@ -5,10 +5,8 @@ import { BrowserRouter, Route, Link } from 'react-router-dom';
 import axios from 'axios';
 
 import Navbar from './components/Navbar.jsx';
-import Hero from './components/Hero.jsx';
-import RestaurantList from './components/RestaurantList.jsx';
-import CreateRoomContainer from './components/createRoomContainer/CreateRoomContainer.jsx';
-import Room from './components/Room.jsx';
+import MainView from './components/MainView.jsx'
+import SignupPage from './components/AuthUserMenu/SignupPage.jsx';
 
 import 'bulma/css/bulma.css';
 import 'animate.css/animate.css';
@@ -142,22 +140,25 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div>
-          <Navbar
-            login={this.login.bind(this)}
-            logout={this.logout.bind(this)}
-            subscribe={this.subscribe.bind(this)}
-            loggedIn={this.state.loggedIn}
-            username={this.state.loggedInUsername}
-            error={this.state.loginError} />
-          <Hero />
+          <div>
+            <Navbar
+              login={this.login.bind(this)}
+              logout={this.logout.bind(this)}
+              subscribe={this.subscribe.bind(this)}
+              loggedIn={this.state.loggedIn}
+              username={this.state.loggedInUsername}
+              error={this.state.loginError} />
+          </div >
           <Route exact path="/" render={
-            (props) => <CreateRoomContainer
+            (props) => <MainView
               searchUsers={this.searchUsers.bind(this)}
               searchedUsers={this.state.searchedUsers}
               {...props} />} />
-          {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
-          <Route path="/rooms/:roomID" component={Room} />
-        </div >
+          <Route path="/signup" render={
+            (props) => <SignupPage
+              subscribe={this.subscribe.bind(this)}
+              {...props} />} />
+        </div>
       </BrowserRouter>
     );
   }

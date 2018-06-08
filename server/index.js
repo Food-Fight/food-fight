@@ -76,7 +76,7 @@ app.post('/subscribe', passport.authenticate('local-signup', {
   successRedirect: '/',
   failureFlash: true,
 }), (req, res) => {
-  res.status(200).send(req.session.passport);
+  res.status(200).redirect('/');
 });
 
 app.post('/login', passport.authenticate('local-login', {
@@ -118,7 +118,7 @@ app.post('/api/email', (req, res) => {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
     Subject: 'You\'ve been invited to a Food Fight!',
-    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}rooms/${id} to begin.`,
+    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/signup'} to begin.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')

@@ -1,5 +1,6 @@
 import React from 'react';
 import validator from 'validator';
+import { Route, Link } from 'react-router-dom';
 
 class SubscribeDialog extends React.Component {
   constructor(props) {
