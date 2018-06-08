@@ -13,7 +13,9 @@ class SearchResult extends React.Component {
             {this.props.user.email}
           </p>
           <span>
-            <a className="user-search-button button is-info is-small">
+            <a
+              className="user-search-button button is-info is-small"
+              onClick={this.props.addCombatant.bind(this, this.props.user.email)}>
               <span>Add</span>
               <span className="icon is-small">
                 <i className="fas fa-angle-right"></i>

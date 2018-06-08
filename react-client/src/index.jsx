@@ -7,10 +7,8 @@ import axios from 'axios';
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
 import RestaurantList from './components/RestaurantList.jsx';
-import CreateRoom from './components/CreateRoom.jsx';
+import CreateRoomContainer from './components/createRoomContainer/CreateRoomContainer.jsx';
 import Room from './components/Room.jsx';
-import SearchUsersPanel from './components/SearchInvite/SearchUsersPanel.jsx';
-import InviteUsers from './components/SearchInvite/InviteUsers.jsx';
 
 import 'bulma/css/bulma.css';
 import 'animate.css/animate.css';
@@ -142,36 +140,25 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <Navbar
-          login={this.login.bind(this)}
-          logout={this.logout.bind(this)}
-          subscribe={this.subscribe.bind(this)}
-          loggedIn={this.state.loggedIn}
-          username={this.state.loggedInUsername}
-          error={this.state.loginError} />
-        <Hero />
-        <div id="site-body" className="tile is-ancestor">
-          <div className="tile is-parent is-vertical">
-            <SearchUsersPanel
+      <BrowserRouter>
+        <div>
+          <Navbar
+            login={this.login.bind(this)}
+            logout={this.logout.bind(this)}
+            subscribe={this.subscribe.bind(this)}
+            loggedIn={this.state.loggedIn}
+            username={this.state.loggedInUsername}
+            error={this.state.loginError} />
+          <Hero />
+          <Route exact path="/" render={
+            (props) => <CreateRoomContainer
               searchUsers={this.searchUsers.bind(this)}
-              foundUsers={this.state.searchedUsers} />
-            <InviteUsers />
-          </div>
-          <div className="tile is-parent is-vertical is-8">
-            <article className="tile is-child notification create-room-container">
-              <h2 className="is-secondary title is-3"> Create A Room</h2>
-              <BrowserRouter>
-                <div className="container">
-                  <Route exact path="/" component={CreateRoom} />
-                  {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
-                  <Route path="/rooms/:roomID" component={Room} />
-                </div>
-              </BrowserRouter>
-            </article>
-          </div>
-        </div>
-      </div >
+              searchedUsers={this.state.searchedUsers}
+              {...props} />} />
+          {/* TO DO: Check if a user has proper authentication and redirect accordingly */}
+          <Route path="/rooms/:roomID" component={Room} />
+        </div >
+      </BrowserRouter>
     );
   }
 }
