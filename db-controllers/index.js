@@ -85,7 +85,7 @@ const getRoomMembers = (roomID, callback) => {
     include: [{
       model: db.models.Room,
       where: { uniqueid: roomID },
-      attributes: [],
+      attributes: ['name', 'zipcode'],
       through: { attributes: [] },
     }],
   })
