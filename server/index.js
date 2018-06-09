@@ -139,7 +139,7 @@ app.post('/api/roomEmail', (req, res) => {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
     Subject: 'You\'ve been invited to join a Food Fight room!',
-    'Text-part': `You've been invited to a Food Fight room. Visit ${process.env.DOMAIN || `http://localhost:3000/room/${roomInfo.uniqueid}`} to join.`,
+    'Text-part': `You've been invited to a Food Fight room. Visit ${process.env.DOMAIN || `http://localhost:3000/rooms/${roomInfo.uniqueid}`} to join.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
@@ -258,5 +258,5 @@ db.models.sequelize.sync().then(() => {
       console.log('Received chat!', data);
       io.sockets.emit('chat', data.roomID);
     });
-  })
+  });
 });
