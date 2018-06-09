@@ -111,14 +111,14 @@ app.post('/searchUsers', (req, res) => {
 //
 // ─── SERVE EMAIL INVITATIONS ────────────────────────────────────────────────────
 //
-app.post('/api/email', (req, res) => {
+app.post('/api/signupEmail', (req, res) => {
   console.log('Received request to send email to', req.body.email);
-  const { email, id } = req.body;
+  const { email } = req.body;
   const emailData = {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
-    Subject: 'You\'ve been invited to a Food Fight!',
-    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/signup'} to begin.`,
+    Subject: 'You\'ve been invited to Food Fight!',
+    'Text-part': `You've been invited to a Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000'}/signup to signup.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
@@ -132,6 +132,26 @@ app.post('/api/email', (req, res) => {
     });
 });
 
+app.post('/api/roomEmail', (req, res) => {
+  console.log('Received request to send email to', req.body);
+  const { email, roomInfo } = req.body;
+  const emailData = {
+    FromEmail: 'foodfightHR@gmail.com',
+    FromName: 'Food Fight',
+    Subject: 'You\'ve been invited to join a Food Fight room!',
+    'Text-part': `You've been invited to a Food Fight room. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}rooms/${roomInfo.uniqueid} to join.`,
+    Recipients: [{ Email: email }],
+  };
+  Mailjet.post('send')
+    .request(emailData)
+    .then(() => {
+      res.end('Email sent!');
+    })
+    .catch((err) => {
+      console.log('Error in interacting with the MailJet API', err);
+      res.status(404).end();
+    });
+});
 
 //
 // ─── CREATE ROOMS AND GET ROOM INFO ─────────────────────────────────────────────
@@ -144,7 +164,7 @@ app.post('/api/save', (req, res) => {
       console.log('Error saving room and members', err);
     } else {
       console.log('Room and members saved!', room, users);
-      res.end(`Room ${id} saved`);
+      res.send(room[0].dataValues);
     }
   });
 });
