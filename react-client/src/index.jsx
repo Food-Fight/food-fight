@@ -7,6 +7,7 @@ import axios from 'axios';
 import Navbar from './components/Navbar.jsx';
 import MainView from './components/MainView.jsx'
 import SignupPage from './components/AuthUserMenu/SignupPage.jsx';
+import Room from './components/Room.jsx';
 
 import 'bulma/css/bulma.css';
 import 'animate.css/animate.css';
@@ -158,6 +159,7 @@ class App extends React.Component {
             (props) => <SignupPage
               subscribe={this.subscribe.bind(this)}
               {...props} />} />
+          <Route path="/rooms/:roomID" component={Room} />
         </div>
       </BrowserRouter>
     );

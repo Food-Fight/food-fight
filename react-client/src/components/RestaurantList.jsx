@@ -10,17 +10,17 @@ class RestaurantList extends React.Component {
   }
   searchYelp() {
     $.post('/api/search', { zip: this.props.zipcode }, (data, status) => {
-      console.log(`Requested Yelp search for ${this.props.zipcode}:`, status);
+      // console.log(`Requested Yelp search for ${this.props.zipcode}:`, status);
       if (data.businesses) {
         this.setState({
           restaurants: data.businesses,
         });
-        console.log('YELP', this.state.restaurants);
+        // console.log('YELP', this.state.restaurants);
       }
     });
   }
 
-  componentDidMount() {
+  componentDidUpdate() {
     this.searchYelp();
   }
 

@@ -1,5 +1,6 @@
 const db = require('../database-postgresql/models');
 const bcrypt = require('bcrypt');
+const uniqueString = require('unique-string');
 
 const saveMember = (email, password, zipcode, callback) => {
   let hashedPW;
@@ -20,25 +21,25 @@ const saveMember = (email, password, zipcode, callback) => {
     });
 };
 
-const saveRoomAndMembers = (roomID, members, callback) => {
-  const promisedMembers = members.map(memberEmail => db.models.User.findOrCreate({
+const saveRoomAndMembers = (roomName, zip, members, callback) => {
+  const promisedMembers = members.map(memberEmail => db.models.User.findOne({
     where: {
       email: memberEmail,
-      zipcode: 78702,
     },
   }));
 
   db.models.Room.findOrCreate({
     where: {
-      uniqueid: roomID,
-      zipcode: 78702,
+      name: roomName,
+      uniqueid: uniqueString(),
+      zipcode: zip,
     },
   })
     .then((room) => {
       Promise.all(promisedMembers)
         .then((users) => {
           users.forEach((user) => {
-            room[0].addUser(user[0]);
+            room[0].addUser(user);
           });
           callback(null, room, users);
         })
@@ -51,32 +52,32 @@ const saveRoomAndMembers = (roomID, members, callback) => {
     });
 };
 
-const saveMessage = (name, message, roomID, callback) => {
-  console.log('Saving message', name, message, roomID);
-  db.models.Message.create({
-    name,
-    message,
-    room_id: roomID,
-  })
-    .then(() => {
-      callback(null);
-    })
-    .catch((error) => {
-      callback(error);
-    });
-};
+// const saveMessage = (name, message, roomID, callback) => {
+//   console.log('Saving message', name, message, roomID);
+//   db.models.Message.create({
+//     name,
+//     message,
+//     room_id: roomID,
+//   })
+//     .then(() => {
+//       callback(null);
+//     })
+//     .catch((error) => {
+//       callback(error);
+//     });
+// };
 
-const getMessages = (roomID, callback) => {
-  db.models.Message.findAll({
-    where: { room_id: roomID },
-  })
-    .then((results) => {
-      callback(null, results);
-    })
-    .catch((error) => {
-      callback(error);
-    });
-}
+// const getMessages = (roomID, callback) => {
+//   db.models.Message.findAll({
+//     where: { room_id: roomID },
+//   })
+//     .then((results) => {
+//       callback(null, results);
+//     })
+//     .catch((error) => {
+//       callback(error);
+//     });
+// };
 
 const getRoomMembers = (roomID, callback) => {
   db.models.User.findAll({
@@ -84,7 +85,7 @@ const getRoomMembers = (roomID, callback) => {
     include: [{
       model: db.models.Room,
       where: { uniqueid: roomID },
-      attributes: [],
+      attributes: ['name', 'zipcode'],
       through: { attributes: [] },
     }],
   })
@@ -97,4 +98,4 @@ const getRoomMembers = (roomID, callback) => {
     });
 };
 
-module.exports = { saveMember, saveRoomAndMembers, getRoomMembers, saveMessage, getMessages };
+module.exports = { saveMember, saveRoomAndMembers, getRoomMembers };

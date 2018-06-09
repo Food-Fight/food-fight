@@ -12,7 +12,7 @@ class Room extends React.Component {
       message: '',
       messages: [],
       members: [],
-      zipcode: '75020', //hardcoding zip for testing
+      zipcode: '',
       currentSelection: undefined,
       isNominating: true,
     };
@@ -52,7 +52,7 @@ class Room extends React.Component {
       console.log('GOT ROOM MEMEBRS', roomMembers);
       this.setState({
         members: roomMembers,
-        zipcode: roomMembers[0].zipcode,
+        zipcode: roomMembers[0].rooms[0].zipcode,
       });
     });
   }
