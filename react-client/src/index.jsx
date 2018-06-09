@@ -154,6 +154,7 @@ class App extends React.Component {
               searchUsers={this.searchUsers.bind(this)}
               searchedUsers={this.state.searchedUsers}
               {...props} />} />
+          <Route path="/rooms/:roomID" component={Room} />
           <Route path="/signup" render={
             (props) => <SignupPage
               subscribe={this.subscribe.bind(this)}
