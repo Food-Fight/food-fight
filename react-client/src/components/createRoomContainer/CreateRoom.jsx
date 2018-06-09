@@ -30,11 +30,25 @@ class CreateRoom extends React.Component {
           zip: this.state.zipCode,
           members: this.props.combatants
         },
-        (data, status) => {
-          console.log(`Room ${this.state.roomID} saved to the database:`, status);
+        (roomInfo, status) => {
+          console.log(`Room ${this.state.roomName} saved to the database:`, status);
+          this.sendRoomEmail(roomInfo, this.props.combatants);
         },
       );
     }
+  }
+
+  sendRoomEmail(roomInfo, members) {
+    members.forEach(email => {
+      $.post('/api/roomEmail', 
+      { 
+        email: email,
+        roomInfo: roomInfo
+      }, 
+      (data, status) => {
+        console.log('Room emails sent!', status);
+      })
+    })
   }
 
   // createUniqueID() {
