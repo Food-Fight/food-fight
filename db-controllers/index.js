@@ -51,6 +51,33 @@ const saveRoomAndMembers = (roomID, members, callback) => {
     });
 };
 
+const saveMessage = (name, message, roomID, callback) => {
+  console.log('Saving message', name, message, roomID);
+  db.models.Message.create({
+    name,
+    message,
+    room_id: roomID,
+  })
+    .then(() => {
+      callback(null);
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
+const getMessages = (roomID, callback) => {
+  db.models.Message.findAll({
+    where: { room_id: roomID },
+  })
+    .then((results) => {
+      callback(null, results);
+    })
+    .catch((error) => {
+      callback(error);
+    });
+}
+
 const getRoomMembers = (roomID, callback) => {
   db.models.User.findAll({
     attributes: ['email', 'zipcode'],
@@ -70,4 +97,4 @@ const getRoomMembers = (roomID, callback) => {
     });
 };
 
-module.exports = { saveMember, saveRoomAndMembers, getRoomMembers };
+module.exports = { saveMember, saveRoomAndMembers, getRoomMembers, saveMessage, getMessages };

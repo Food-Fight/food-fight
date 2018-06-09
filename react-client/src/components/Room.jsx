@@ -10,7 +10,7 @@ class Room extends React.Component {
     this.state = {
       name: '',
       message: '',
-      latestMessage: {},
+      messages: [],
       members: [],
       zipcode: '75020', //hardcoding zip for testing
       currentSelection: undefined,
@@ -24,18 +24,30 @@ class Room extends React.Component {
     this.voteVeto = this.voteVeto.bind(this);
 
     this.socket = io.connect(process.env.PORT);
-    this.socket.on('chat', data => {
-      if (data.roomID === this.roomID) {
-        console.log('Received message', data.message);
-        this.setState({
-          latestMessage: data.message,
-        });
+    this.socket.on('chat', (roomID) => {
+      if (roomID === this.roomID) {
+        console.log('Received message');
+        this.getMessages();
       }
     });
   }
 
   // Send post request to server to fetch room info when user visits link
   componentDidMount() {
+    this.getMessages();
+    this.getRoomInfo();
+  }
+  
+  getMessages() {
+    $.post('/api/messageInfo', { roomID: this.roomID }).then(messages => {
+      console.log('GOT MESSAGES', messages);
+      this.setState({
+        messages: messages,
+      });
+    });
+  }
+
+  getRoomInfo() {
     $.post('/api/roomInfo', { roomID: this.roomID }).then(roomMembers => {
       console.log('GOT ROOM MEMEBRS', roomMembers);
       this.setState({
@@ -57,12 +69,15 @@ class Room extends React.Component {
   }
 
   sendMessage() {
-    this.socket.emit('chat', {
+    let messageObj = {
       message: {
         name: this.state.name,
         message: this.state.message,
       },
       roomID: this.roomID,
+    };
+    $.post('/api/saveMessage', messageObj).then(() => {
+      this.socket.emit('chat', messageObj);
     });
   }
 
@@ -128,8 +143,10 @@ class Room extends React.Component {
             </div>
             <button onClick={this.sendMessage.bind(this)}>Send</button>
             {/* This is temporary and just for testing. Ideally the messages will be stored in the database */}
-            <h3>Latest Message</h3>
-            <strong>{this.state.latestMessage.name} </strong> {this.state.latestMessage.message}
+            <h3>Messages</h3>
+            {this.state.messages.map((message) => {
+              <p><strong>{message.name} </strong> {message.message}</p>
+            })}
           </div>
         </div>
       </div>
