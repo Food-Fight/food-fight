@@ -159,7 +159,10 @@ class App extends React.Component {
             (props) => <SignupPage
               subscribe={this.subscribe.bind(this)}
               {...props} />} />
-          <Route path="/rooms/:roomID" component={Room} />
+          <Route path="/rooms/:roomID" render={
+            (props) => <Room 
+            username={this.state.loggedInUsername}
+            {...props} />} />
         </div>
       </BrowserRouter>
     );

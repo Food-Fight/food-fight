@@ -98,4 +98,40 @@ const getRoomMembers = (roomID, callback) => {
     });
 };
 
-module.exports = { saveMember, saveRoomAndMembers, getRoomMembers };
+const saveRestaurant = (name, roomID, votes, vetoed, callback) => {
+  const promisedRoom = db.models.Room.findOne({
+    where: {
+      uniqueid: roomID,
+    },
+    attributes: ['id'],
+    raw: true,
+  });
+
+  db.models.Restaurant.findOrCreate({
+    where: {
+      name,
+      votes,
+      vetoed,
+    },
+  })
+    .then((restaurant) => {
+      Promise.all([promisedRoom])
+        .then((room) => {
+          restaurant[0].setRoom(room[0].id);
+          callback(null, restaurant);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
+module.exports = {
+  saveMember,
+  saveRoomAndMembers,
+  getRoomMembers,
+  saveRestaurant,
+};
