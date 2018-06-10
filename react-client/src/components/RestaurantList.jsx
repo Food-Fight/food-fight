@@ -1,11 +1,13 @@
 import React from 'react';
 import $ from 'jquery';
 import RestaurantListItem from './RestaurantListItem.jsx';
+import dummyData from '../dummyData.js';
+
 class RestaurantList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      restaurants: [],
+      restaurants: dummyData,
     };
   }
   searchYelp() {

@@ -12,7 +12,7 @@ class Room extends React.Component {
       message: '',
       messages: [],
       members: [],
-      zipcode: '78702',
+      zipcode: undefined,
       currentSelection: undefined,
       isNominating: true,
       restaurants: [],
@@ -67,7 +67,7 @@ class Room extends React.Component {
 
   getRoomInfo() {
     $.get(`/api/rooms/${this.roomID}`).then(roomMembers => {
-      console.log('GOT ROOM MEMEBRS', roomMembers);
+      console.log('GOT ROOM MEMBERS', roomMembers);
       this.setState({
         members: roomMembers,
         zipcode: roomMembers[0].rooms[0].zipcode,
@@ -151,6 +151,9 @@ class Room extends React.Component {
   }
 
   render() {
+    let restaurantList = this.state.zipcode
+      ? <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant}/>
+      : ('')
     let currentSelection = this.state.currentSelection
       ? <CurrentSelection restaurant={this.state.currentSelection} />
       : <div>Please nominate a restaurant</div>
@@ -160,7 +163,7 @@ class Room extends React.Component {
         <div className="columns">
           <div id="yelp-list" className="column">
             <h3 className="is-size-3">Local Resturants</h3>
-            <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant}/>
+            {restaurantList}
           </div>
           <div id="current-resturant" className="column">
             <h3 className="is-size-3">Current Selection</h3>
