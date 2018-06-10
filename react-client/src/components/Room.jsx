@@ -24,7 +24,7 @@ class Room extends React.Component {
     this.voteApprove = this.voteApprove.bind(this);
     this.voteVeto = this.voteVeto.bind(this);
 
-    this.socket = io.connect(process.env.PORT);
+    this.socket = io.connect(process.env.PORT || 'http://localhost:3000');
     this.socket.on('chat', roomID => {
       if (roomID === this.roomID) {
         console.log('Received message');

@@ -118,7 +118,7 @@ app.post('/api/signupEmail', (req, res) => {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
     Subject: 'You\'ve been invited to Food Fight!',
-    'Text-part': `You've been invited to a Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000'}/signup to signup.`,
+    'Text-part': `You've been invited to a Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}signup to signup.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
