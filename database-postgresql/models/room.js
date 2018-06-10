@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     Room.belongsTo(models.User, {
       foreignKey: 'owner',
     });
+    Room.hasMany(models.Restaurant);
   };
 
   return Room;
