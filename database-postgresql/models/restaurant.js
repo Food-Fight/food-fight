@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
 
   Restaurant.associate = (models) => {
     Restaurant.belongsTo(models.Room);
+    Restaurant.belongsToMany(models.User, {
+      through: 'restaurant_user',
+      foreignKey: 'restaurant_id',
+    });
   };
 
   return Restaurant;
