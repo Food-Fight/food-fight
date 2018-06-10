@@ -118,7 +118,7 @@ app.post('/api/signupEmail', (req, res) => {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
     Subject: 'You\'ve been invited to Food Fight!',
-    'Text-part': `You've been invited to a Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/signup'} to signup.`,
+    'Text-part': `You've been invited to a Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}signup to signup.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
@@ -139,7 +139,7 @@ app.post('/api/roomEmail', (req, res) => {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
     Subject: 'You\'ve been invited to join a Food Fight room!',
-    'Text-part': `You've been invited to a Food Fight room. Visit ${process.env.DOMAIN || `http://localhost:3000/rooms/${roomInfo.uniqueid}`} to join.`,
+    'Text-part': `You've been invited to a Food Fight room. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}rooms/${roomInfo.uniqueid} to join.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
@@ -169,8 +169,8 @@ app.post('/api/save', (req, res) => {
   });
 });
 
-app.post('/api/roomInfo', (req, res) => {
-  const { roomID } = req.body;
+app.get('/api/rooms/:roomID', (req, res) => {
+  const { roomID } = req.params;
   dbHelpers.getRoomMembers(roomID, (err, roomMembers) => {
     if (err) {
       console.log('Error getting room members', err);
@@ -188,8 +188,6 @@ app.post('/api/roomInfo', (req, res) => {
 app.post('/api/search', (req, res) => {
   console.log('Received request for Yelp search of', req.body);
   const { zip } = req.body;
-  // TO DO: Store the zip code in the database (may be incorporated into /api/save request
-  // depending on how the front end is structured)
   const options = {
     method: 'GET',
     uri: 'https://api.yelp.com/v3/businesses/search',
@@ -209,7 +207,10 @@ app.post('/api/search', (req, res) => {
   });
 });
 
-app.post('/api/saveMessage', (req, res) => {
+//
+// ─── HANDLE MESSAGES AND VOTES─────────────────────────────────────────────────────────
+//
+app.post('/api/messages', (req, res) => {
   const { message, roomID } = req.body;
   dbHelpers.saveMessage(message.name, message.message, roomID, (err) => {
     if (err) {
@@ -222,8 +223,8 @@ app.post('/api/saveMessage', (req, res) => {
   });
 });
 
-app.post('/api/messageInfo', (req, res) => {
-  const { roomID } = req.body;
+app.get('/api/messages/:roomID', (req, res) => {
+  const { roomID } = req.params;
   dbHelpers.getMessages(roomID, (err, results) => {
     if (err) {
       console.log('Error retrieving messages', err);
@@ -234,6 +235,17 @@ app.post('/api/messageInfo', (req, res) => {
     }
   });
 });
+
+app.post('/api/votes/', (req, res) => {
+  const { restaurant, type, roomID } = req.body;
+  // TO DO: Store vote information for a given restaurant in the database
+})
+
+app.get('/api/votes/:roomID', (req, res) => {
+  const { roomID } = req.params;
+  // TO DO: Get vote informations for all restaurants from the given room
+});
+
 
 // ────────────────────────────────────────────────────────────────────────────────
 
@@ -258,5 +270,10 @@ db.models.sequelize.sync().then(() => {
       console.log('Received chat!', data);
       io.sockets.emit('chat', data.roomID);
     });
-  });
+
+    newSocket.on('vote', (data) => {
+      console.log('Received vote!', data);
+      io.sockets.emit('vote', data.roomID);
+    });
+  })
 });

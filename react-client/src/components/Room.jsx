@@ -15,6 +15,7 @@ class Room extends React.Component {
       zipcode: '',
       currentSelection: undefined,
       isNominating: true,
+      restaurants: [],
     };
     this.roomID = this.props.match.params.roomID;
 
@@ -23,11 +24,17 @@ class Room extends React.Component {
     this.voteApprove = this.voteApprove.bind(this);
     this.voteVeto = this.voteVeto.bind(this);
 
-    this.socket = io.connect(process.env.PORT);
-    this.socket.on('chat', (roomID) => {
+    this.socket = io.connect(process.env.PORT || 'http://localhost:3000');
+    this.socket.on('chat', roomID => {
       if (roomID === this.roomID) {
         console.log('Received message');
         this.getMessages();
+      }
+    });
+    this.socket.on('vote', roomID => {
+      if (roomID === this.roomID) {
+        console.log('Received vote');
+        this.getVotes();
       }
     });
   }
@@ -36,10 +43,11 @@ class Room extends React.Component {
   componentDidMount() {
     this.getMessages();
     this.getRoomInfo();
+    this.getVotes();
   }
   
   getMessages() {
-    $.post('/api/messageInfo', { roomID: this.roomID }).then(messages => {
+    $.get(`/api/messages/${this.roomID}`).then(messages => {
       console.log('GOT MESSAGES', messages);
       this.setState({
         messages: messages,
@@ -48,11 +56,20 @@ class Room extends React.Component {
   }
 
   getRoomInfo() {
-    $.post('/api/roomInfo', { roomID: this.roomID }).then(roomMembers => {
+    $.get(`/api/rooms/${this.roomID}`).then(roomMembers => {
       console.log('GOT ROOM MEMEBRS', roomMembers);
       this.setState({
         members: roomMembers,
         zipcode: roomMembers[0].rooms[0].zipcode,
+      });
+    });
+  }
+
+  getVotes() {
+    $.get(`/api/votes/${this.roomID}`).then(restaurants => {
+      console.log('GOT RESTAURANTS', restaurants);
+      this.setState({
+        restaurants: restaurants,
       });
     });
   }
@@ -64,7 +81,14 @@ class Room extends React.Component {
         currentSelection: restaurant,
         isNominating: false,
       });
-      // TO DO: Update database with current selection
+      let voteObj = {
+        restaurant: '', // FILL THIS IN
+        type: '', // FILL THIS IN
+        roomID: this.roomID,
+      };
+      $.post('/api/votes', voteObj).then(() => {
+        this.socket.emit('vote', voteObj);
+      });
     }
   }
 
@@ -76,7 +100,7 @@ class Room extends React.Component {
       },
       roomID: this.roomID,
     };
-    $.post('/api/saveMessage', messageObj).then(() => {
+    $.post('/api/messages', messageObj).then(() => {
       this.socket.emit('chat', messageObj);
     });
   }
@@ -97,7 +121,14 @@ class Room extends React.Component {
     /* TO DO: Check if a user has already voted for 
     the given restaurant to prevent duplicate votes */
     
-    //TO DO: Update vote number in the database
+    let voteObj = {
+      restaurant: '', // FILL THIS IN
+      type: '', // FILL THIS IN
+      roomID: this.roomID,
+    };
+    $.post('/api/votes', voteObj).then(() => {
+      this.socket.emit('vote', voteObj);
+    });
   }
 
   voteVeto() {
