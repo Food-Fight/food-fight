@@ -237,9 +237,17 @@ app.get('/api/messages/:roomID', (req, res) => {
 });
 
 app.post('/api/votes/', (req, res) => {
-  const { restaurant, type, roomID } = req.body;
+  const { name, roomID, votes, vetoed } = req.body;
   // TO DO: Store vote information for a given restaurant in the database
-})
+  dbHelpers.saveRestaurant(name, roomID, votes, vetoed, (err, restaurant) => {
+    if (err) {
+      console.log('Error saving restaurant', err);
+    } else {
+      console.log('Restaurant saved!', restaurant);
+      res.end('Restaurant saved!');
+    }
+  });
+});
 
 app.get('/api/votes/:roomID', (req, res) => {
   const { roomID } = req.params;
