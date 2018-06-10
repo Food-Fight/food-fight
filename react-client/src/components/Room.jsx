@@ -16,6 +16,7 @@ class Room extends React.Component {
       currentSelection: undefined,
       isNominating: true,
       restaurants: [],
+      loggedInUsername: null,
     };
     this.roomID = this.props.match.params.roomID;
 
@@ -45,6 +46,15 @@ class Room extends React.Component {
     this.getRoomInfo();
     this.getVotes();
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log('PREVPROPS', prevProps, 'PREVSTATE', prevState);
+  //   if (this.props.username !== null && prevState.loggedInUsername !== this.state.loggedInUsername && this.state.loggedInUsername === null) {
+  //     this.setState({
+  //       loggedInUsername: this.props.username,
+  //     });
+  //   };
+  // };
   
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
@@ -82,10 +92,12 @@ class Room extends React.Component {
         isNominating: false,
       });
       let voteObj = {
-        restaurant: '', // FILL THIS IN
-        type: '', // FILL THIS IN
+        name: restaurant.name,
         roomID: this.roomID,
+        votes: 0,
+        vetoed: false,
       };
+      console.log('VOTEOBJ', voteObj);
       $.post('/api/votes', voteObj).then(() => {
         this.socket.emit('vote', voteObj);
       });
