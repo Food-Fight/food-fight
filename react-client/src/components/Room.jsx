@@ -37,7 +37,7 @@ class Room extends React.Component {
     this.getMessages();
     this.getRoomInfo();
   }
-  
+
   getMessages() {
     $.post('/api/messageInfo', { roomID: this.roomID }).then(messages => {
       console.log('GOT MESSAGES', messages);
@@ -94,9 +94,9 @@ class Room extends React.Component {
   }
 
   voteApprove() {
-    /* TO DO: Check if a user has already voted for 
+    /* TO DO: Check if a user has already voted for
     the given restaurant to prevent duplicate votes */
-    
+
     //TO DO: Update vote number in the database
   }
 
@@ -117,7 +117,7 @@ class Room extends React.Component {
         <div className="columns">
           <div id="yelp-list" className="column">
             <h3 className="is-size-3">Local Resturants</h3>
-            <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant}/>
+            <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} />
           </div>
           <div id="current-resturant" className="column">
             <h3 className="is-size-3">Current Selection</h3>
