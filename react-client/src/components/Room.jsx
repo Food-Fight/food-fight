@@ -16,7 +16,7 @@ class Room extends React.Component {
       currentSelection: undefined,
       isNominating: true,
       restaurants: [],
-      loggedInUsername: null,
+      loggedInUsername: 'riffryder@icloud.com',
     };
     this.roomID = this.props.match.params.roomID;
 
@@ -48,13 +48,8 @@ class Room extends React.Component {
   }
 
   // componentDidUpdate(prevProps, prevState) {
-  //   console.log('PREVPROPS', prevProps, 'PREVSTATE', prevState);
-  //   if (this.props.username !== null && prevState.loggedInUsername !== this.state.loggedInUsername && this.state.loggedInUsername === null) {
-  //     this.setState({
-  //       loggedInUsername: this.props.username,
-  //     });
-  //   };
-  // };
+  //   console.log(prevProps, prevState);
+  // }
   
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
@@ -94,12 +89,10 @@ class Room extends React.Component {
       let voteObj = {
         name: restaurant.name,
         roomID: this.roomID,
-        votes: 0,
-        vetoed: false,
       };
       console.log('VOTEOBJ', voteObj);
-      $.post('/api/votes', voteObj).then(() => {
-        this.socket.emit('vote', voteObj);
+      $.post('/api/nominate', voteObj).then(() => {
+        this.socket.emit('nominate', voteObj);
       });
     }
   }
@@ -132,12 +125,12 @@ class Room extends React.Component {
   voteApprove() {
     /* TO DO: Check if a user has already voted for 
     the given restaurant to prevent duplicate votes */
-    
+    console.log('STATE', this.state);
     let voteObj = {
-      restaurant: '', // FILL THIS IN
-      type: '', // FILL THIS IN
+      name: this.state.currentSelection.name,
       roomID: this.roomID,
     };
+    console.log('VOTEOBJ VOTE', voteObj);
     $.post('/api/votes', voteObj).then(() => {
       this.socket.emit('vote', voteObj);
     });
