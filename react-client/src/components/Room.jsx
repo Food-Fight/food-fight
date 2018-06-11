@@ -57,6 +57,19 @@ class Room extends React.Component {
   // componentDidUpdate(prevProps, prevState) {
   //   console.log(prevProps, prevState);
   // }
+
+  checkLogin() {
+    $.get('/checklogin')
+      .then(res => {
+        console.log('THIS IS RES', res);
+        if (res.data.user) {
+          console.log('Logged in as:', res.data.user.email);
+          this.setState({
+            loggedInUsername: res.data.user.email,
+          });
+        }
+      });
+  }
   
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
