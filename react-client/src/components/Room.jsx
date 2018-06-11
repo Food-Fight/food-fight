@@ -16,9 +16,11 @@ class Room extends React.Component {
       currentSelection: undefined,
       isNominating: true,
       //This is just dummy data to test the Scoreboard
-      votes: [{'name': 'Imperial River Company', 'votes': 1, "vetoed": true},
-              {'name': 'The Riverside', 'votes': 2, "vetoed": false},
-              {'name': 'Henry\'s Deli Mart', 'votes': 3, "vetoed": true}],
+      votes: [
+        { name: 'Imperial River Company', votes: 1, vetoed: true },
+        { name: 'The Riverside', votes: 2, vetoed: false },
+        { name: "Henry's Deli Mart", votes: 3, vetoed: true },
+      ],
       loggedInUsername: null,
       roomName: '',
     };
@@ -33,9 +35,9 @@ class Room extends React.Component {
     this.socket.on('chat', message => {
       if (message.roomID === this.roomID) {
         console.log('Received message', message);
-        this.setState({ 
-          messages: [...this.state.messages, message.message], 
-        }); 
+        this.setState({
+          messages: [...this.state.messages, message.message],
+        });
         //this.getMessages();
       }
     });
@@ -57,7 +59,7 @@ class Room extends React.Component {
   // componentDidUpdate(prevProps, prevState) {
   //   console.log(prevProps, prevState);
   // }
-  
+
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
       // console.log('GOT MESSAGES', messages);
@@ -158,14 +160,17 @@ class Room extends React.Component {
     });
   }
 
-
   render() {
-    let restaurantList = this.state.zipcode
-      ? <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant}/>
-      : ('')
-    let currentSelection = this.state.currentSelection
-      ? <CurrentSelection restaurant={this.state.currentSelection} />
-      : <div>Please nominate a restaurant</div>
+    let restaurantList = this.state.zipcode ? (
+      <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} />
+    ) : (
+      ''
+    );
+    let currentSelection = this.state.currentSelection ? (
+      <CurrentSelection restaurant={this.state.currentSelection} />
+    ) : (
+      <div>Please nominate a restaurant</div>
+    );
     return (
       <div>
         {/* <div className="is-divider" /> */}
@@ -177,17 +182,23 @@ class Room extends React.Component {
           <div id="current-resturant" className="column">
             <h3 className="is-size-3">Current Selection</h3>
             {currentSelection}
-            <button onClick={this.voteApprove}>Approve</button>
-            <button onClick={this.voteVeto}>Veto</button>
+            <button onClick={this.voteApprove} className="button is-success">
+              Approve
+            </button>
+            <button onClick={this.voteVeto} className="button is-danger">
+              Veto
+            </button>
             <div>
               <h3 className="is-size-3">Scoreboard</h3>
-              {this.state.votes.sort((a, b) => {
-                return b.votes - a.votes;
-              }).map(restaurant => (
-                <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
-                  <strong>{restaurant.name}</strong> {restaurant.votes} 
-                </h5>
-              ))}
+              {this.state.votes
+                .sort((a, b) => {
+                  return b.votes - a.votes;
+                })
+                .map(restaurant => (
+                  <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
+                    <strong>{restaurant.name}</strong> {restaurant.votes}
+                  </h5>
+                ))}
             </div>
           </div>
           <div id="chat" className="column">
@@ -199,15 +210,23 @@ class Room extends React.Component {
             <div>Zipcode: {this.state.zipcode}</div>
             <h4 className="is-size-4">Live Chat</h4>
             <div>
-              Name <input type="text" value={this.state.name} onChange={this.updateName.bind(this)} />
+              Name{' '}
+              <input type="text" value={this.state.name} onChange={this.updateName.bind(this)} />
             </div>
             <span>
-              Message <input type="text" value={this.state.message} onChange={this.updateMessage.bind(this)} />
+              Message{' '}
+              <input
+                type="text"
+                value={this.state.message}
+                onChange={this.updateMessage.bind(this)}
+              />
             </span>
-            <button onClick={this.sendMessage.bind(this)}>Send</button>        
+            <button onClick={this.sendMessage.bind(this)}>Send</button>
             <div>
-              {this.state.messages.map((message) => (
-                <p><strong>{message.name}:</strong> {message.message}</p>
+              {this.state.messages.map(message => (
+                <p>
+                  <strong>{message.name}:</strong> {message.message}
+                </p>
               ))}
             </div>
           </div>
