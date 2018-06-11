@@ -16,7 +16,6 @@ class Room extends React.Component {
       currentSelection: undefined,
       currentSelectionName: undefined,
       isNominating: true,
-      //This is just dummy data to test the Scoreboard
       votes: [],
       loggedInUsername: null,
       roomName: '',
@@ -36,7 +35,7 @@ class Room extends React.Component {
         this.setState({ 
           messages: [...this.state.messages, message.message], 
         }); 
-        //this.getMessages();
+        this.getMessages();
       }
     });
     this.socket.on('vote', roomID => {
@@ -59,18 +58,27 @@ class Room extends React.Component {
 
   // Send post request to server to fetch room info when user visits link
   componentDidMount() {
-    //this.getMessages();
+    this.getMessages();
     this.getRoomInfo();
     this.getVotes();
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log(prevProps, prevState);
-  // }
+  checkLogin() {
+    $.get('/checklogin')
+      .then(res => {
+        console.log('THIS IS RES', res);
+        if (res.data.user) {
+          console.log('Logged in as:', res.data.user.email);
+          this.setState({
+            loggedInUsername: res.data.user.email,
+          });
+        }
+      });
+  }
   
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
-      // console.log('GOT MESSAGES', messages);
+      console.log('GOT MESSAGES', messages);
       this.setState({
         messages: messages,
       });
@@ -155,7 +163,7 @@ class Room extends React.Component {
   }
 
   voteApprove() {
-    /* TO DO: Check if a user has already voted for 
+    /* TO DO: Check if a user has already voted for
     the given restaurant to prevent duplicate votes */
     // console.log('STATE', this.state);
     let voteObj = {
@@ -191,16 +199,19 @@ class Room extends React.Component {
     }
   }
 
-
   render() {
-    let restaurantList = this.state.zipcode
-      ? <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} currentName={this.state.currentSelectionName}/>
-      : ('')
-    let currentSelection = (this.state.currentSelection && !this.state.isNominating)
-      ? <CurrentSelection restaurant={this.state.currentSelection} />
-      : <div>Please nominate a restaurant</div>
-      return (
-        <div>
+    let restaurantList = this.state.zipcode ? (
+      <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} />
+    ) : (
+      ''
+    );
+    let currentSelection = (this.state.currentSelection && !this.state.isNominating) ? (
+      <CurrentSelection restaurant={this.state.currentSelection} />
+    ) : (
+      <div>Please nominate a restaurant</div>
+    );
+    return (
+      <div>
         {/* <div className="is-divider" /> */}
         <div className="columns">
           <div id="yelp-list" className="column">
@@ -210,17 +221,35 @@ class Room extends React.Component {
           <div id="current-resturant" className="column">
             <h3 className="is-size-3">Current Selection</h3>
             {currentSelection}
-            <button onClick={this.voteApprove}>Approve</button>
-            <button onClick={this.voteVeto}>Veto</button>
+            <button onClick={this.voteApprove} className="button is-success">
+              Approve
+            </button>
+            <button onClick={this.voteVeto} className="button is-danger">
+              Veto
+            </button>
             <div>
               <h3 className="is-size-3">Scoreboard</h3>
-              {this.state.votes.sort((a, b) => {
-                return b.votes - a.votes;
-              }).map(restaurant => (
-                <h5 style={{ backgroundColor: (restaurant.name === this.state.currentSelection.name) ? 'lightgrey' : 'white' }}>
-                  <strong>{restaurant.name}</strong> {restaurant.votes} 
-                </h5>
-              ))}
+              <table className="table is-striped is-bordered is-fullwidth">
+                <thead>
+                  <th>Resturant</th>
+                  <th>Votes</th>
+                </thead>
+                <tbody>
+                  {this.state.votes
+                    .sort((a, b) => {
+                      return b.votes - a.votes;
+                    })
+                    .map(restaurant => (
+                      // <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
+                      //   <strong>{restaurant.name}</strong> {restaurant.votes}
+                      // </h5>
+                      <tr className={(restaurant.name === this.state.currentSelection.name) ? 'is-selected' : ''}>
+                        <td>{restaurant.name}</td>
+                        <td>{restaurant.votes}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
           </div>
           <div id="chat" className="column">
@@ -231,15 +260,23 @@ class Room extends React.Component {
             <div>Zipcode: {this.state.zipcode}</div>
             <h4 className="is-size-4">Live Chat</h4>
             <div>
-              Name <input type="text" value={this.state.name} onChange={this.updateName.bind(this)} />
+              Name{' '}
+              <input type="text" value={this.state.name} onChange={this.updateName.bind(this)} />
             </div>
             <span>
-              Message <input type="text" value={this.state.message} onChange={this.updateMessage.bind(this)} />
+              Message{' '}
+              <input
+                type="text"
+                value={this.state.message}
+                onChange={this.updateMessage.bind(this)}
+              />
             </span>
-            <button onClick={this.sendMessage.bind(this)}>Send</button>        
+            <button onClick={this.sendMessage.bind(this)}>Send</button>
             <div>
-              {this.state.messages.map((message) => (
-                <p><strong>{message.name}:</strong> {message.message}</p>
+              {this.state.messages.map(message => (
+                <p>
+                  <strong>{message.name}:</strong> {message.message}
+                </p>
               ))}
             </div>
           </div>

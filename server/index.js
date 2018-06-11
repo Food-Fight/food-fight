@@ -153,6 +153,7 @@ app.post('/api/roomEmail', (req, res) => {
     });
 });
 
+
 //
 // ─── CREATE ROOMS AND GET ROOM INFO ─────────────────────────────────────────────
 //
@@ -181,6 +182,11 @@ app.get('/api/rooms/:roomID', (req, res) => {
   });
 });
 
+app.post('/room-redirect', (req, res) => {
+  console.log(req.body);
+  res.redirect(307, `/rooms/${req.body.id}`);
+});
+
 
 //
 // ─── EXTERNAL API LOGIC ─────────────────────────────────────────────────────────
@@ -207,33 +213,36 @@ app.post('/api/search', (req, res) => {
   });
 });
 
+
 //
 // ─── HANDLE MESSAGES AND VOTES─────────────────────────────────────────────────────────
 //
 app.post('/api/messages', (req, res) => {
   const { message, roomID } = req.body;
-  // dbHelpers.saveMessage(message.name, message.message, roomID, (err) => {
-  //   if (err) {
-  //     console.log('Error saving message', err);
-  //     res.status(404).end();
-  //   } else {
-  //     console.log(`Message saved- ${message.name}: ${message.message}`);
-  res.end(`Message saved- ${message.name}: ${message.message}`);
-  //   }
-  // });
+  // console.log('MESSAGE', message, 'ROOM', roomID);
+  dbHelpers.saveMessage(message.name, message.message, roomID, (err, savedMessage) => {
+    if (err) {
+      console.log('Error saving message', err);
+      res.status(404).end();
+    } else {
+      // console.log(`Message saved`, savedMessage);
+      res.end('Message saved', savedMessage);
+    }
+  });
 });
 
 app.get('/api/messages/:roomID', (req, res) => {
-  // const { roomID } = req.params;
-  // dbHelpers.getMessages(roomID, (err, results) => {
-  //   if (err) {
-  //     console.log('Error retrieving messages', err);
-  res.status(404).end();
-  //   } else {
-  //     console.log('Messages retrieved!', roomID);
-  //     res.send(results);
-  //   }
-  // });
+  const { roomID } = req.params;
+  // console.log('ROOMID', roomID);
+  dbHelpers.getMessages(roomID, (err, fetchedMessages) => {
+    if (err) {
+      console.log('Error retrieving messages', err);
+      res.status(404).end();
+    } else {
+      console.log('Messages retrieved!', fetchedMessages);
+      res.send(fetchedMessages);
+    }
+  });
 });
 
 app.post('/api/nominate', (req, res) => {

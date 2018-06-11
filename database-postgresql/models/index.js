@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const Sequelize = require('sequelize');
 
-const Op = Sequelize.Op;
+const { Op } = Sequelize;
 
 // set up connection and create sequelize instance
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
@@ -11,9 +11,9 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,
-  dialectOptions: {
-    ssl: true,
-  },
+  // dialectOptions: {
+  //   ssl: true,
+  // },
 });
 
 // testing connection
@@ -30,7 +30,7 @@ const models = {
   User: sequelize.import('./user'),
   Room: sequelize.import('./room'),
   Restaurant: sequelize.import('./restaurant'),
-  // Message: sequelize.import('./message'),
+  Message: sequelize.import('./message'),
 };
 
 // create relationships between all the tables that have associations

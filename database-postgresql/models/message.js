@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
 
   Message.associate = (models) => {
     Message.belongsTo(models.Room, {
-      targetKey: 'uniqueid',
       foreignKey: 'room_id',
     });
   };
