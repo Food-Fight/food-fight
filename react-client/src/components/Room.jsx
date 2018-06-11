@@ -161,7 +161,7 @@ class Room extends React.Component {
       name: this.state.currentSelection.name,
       roomID: this.roomID,
     };
-      console.log('VOTEOBJ VOTE', voteObj);
+    console.log('VOTEOBJ VOTE', voteObj);
     $.post('/api/votes', voteObj).then(() => {
       this.socket.emit('vote', voteObj);
     });
@@ -194,93 +194,117 @@ class Room extends React.Component {
     let restaurantList = this.state.zipcode ? (
       <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} />
     ) : (
-      ''
-    );
+        ''
+      );
     let currentSelection = (this.state.currentSelection && !this.state.isNominating) ? (
       <CurrentSelection restaurant={this.state.currentSelection} />
     ) : (
-      <div>Please nominate a restaurant</div>
-    );
+        <div>Please nominate a restaurant</div>
+      );
     return (
       <div>
-        {/* <div className="is-divider" /> */}
-        <div className="columns">
-          <div id="yelp-list" className="column">
-            <h3 className="is-size-3">Local Resturants</h3>
-            {restaurantList}
-          </div>
-          <div id="current-resturant" className="column">
-            <h3 className="is-size-3">Current Selection</h3>
-            {currentSelection}
-            <button onClick={this.voteApprove} className="button is-success">
-              Approve
-            </button>
-            <button onClick={this.voteVeto} className="button is-danger">
-              Veto
-            </button>
-            <div>
-              <h3 className="is-size-3">Scoreboard</h3>
-              <table className="table is-striped is-bordered is-fullwidth">
-                <thead>
-                  <th>Resturant</th>
-                  <th>Votes</th>
-                </thead>
-                <tbody>
-                  {this.state.votes
-                    .sort((a, b) => {
-                      return b.votes - a.votes;
-                    })
-                    .map(restaurant => (
-                      // <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
-                      //   <strong>{restaurant.name}</strong> {restaurant.votes}
-                      // </h5>
-                      <tr className={(restaurant.name === this.state.currentSelection.name) ? 'is-selected' : ''}>
-                        <td>{restaurant.name}</td>
-                        <td>{restaurant.votes}</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+        <section className="hero is-primary">
+          <div className="hero-body">
+            <div className="container">
+              <h1 className="title">
+                Welcome to Room {this.state.roomName}
+              </h1>
+              <h2 className="subtitle">
+                <div>
+                  Fighters: {this.state.members.map(user => <span>{user.email} </span>)}
+                </div>
+                <div>Zipcode: {this.state.zipcode}</div>
+              </h2>
             </div>
           </div>
-          <div id="chat" className="column">
-            <h3 className="is-size-3">Welcome to Room {this.state.roomName}</h3>
-            <div>
-              Members: {this.state.members.map(user => <span>{user.email} </span>)}
-            </div>
-            <div>Zipcode: {this.state.zipcode}</div>
-            <h4 className="is-size-4">Live Chat</h4>
-            <div>
-              Name{' '}
-              <input
-                type="text"
-                className="input"
-                value={this.state.name}
-                onChange={this.updateName.bind(this)}
-              />
-            </div>
-            <span>
-              Message{' '}
-              <input
-                type="text"
-                className="input"
-                value={this.state.message}
-                onChange={this.updateMessage.bind(this)}
-              />
-            </span>
-            <button
-              onClick={this.sendMessage.bind(this)}
-              className="button is-outlined is-primary is-medium send-message"
-            >
-              Send
+        </section>
+        <div
+          className="tile is-ancestor"
+          style={{ marginTop: '15px' }}>
+          <div className="tile is-parent">
+            {/* <div className="is-divider" /> */}
+            <article className="tile is-child notification">
+              <div id="yelp-list">
+                <p className="title">Local Resturants</p>
+                {restaurantList}
+              </div>
+            </article>
+          </div>
+          <div className="tile is-parent">
+            <article className="tile is-child notification">
+              <div id="current-resturant">
+                <p className="title">Current Selection</p>
+                {currentSelection}
+                <button onClick={this.voteApprove} className="button is-success">
+                  Approve
             </button>
-            <div className="chat-messages">
-              {this.state.messages.map(message => (
-                <p>
-                  <strong>{message.name}:</strong> {message.message}
-                </p>
-              ))}
-            </div>
+                <button onClick={this.voteVeto} className="button is-danger">
+                  Veto
+            </button>
+                <div>
+                  <h3>Scoreboard</h3>
+                  <table className="table is-striped is-bordered is-fullwidth">
+                    <thead>
+                      <th>Resturant</th>
+                      <th>Votes</th>
+                    </thead>
+                    <tbody>
+                      {this.state.votes
+                        .sort((a, b) => {
+                          return b.votes - a.votes;
+                        })
+                        .map(restaurant => (
+                          // <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
+                          //   <strong>{restaurant.name}</strong> {restaurant.votes}
+                          // </h5>
+                          <tr className={(restaurant.name === this.state.currentSelection.name) ? 'is-selected' : ''}>
+                            <td>{restaurant.name}</td>
+                            <td>{restaurant.votes}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div className="tile is-parent">
+            <article className="tile is-child notification">
+              <div id="chat">
+                <h4 className="is-size-4">Live Chat</h4>
+                <div>
+                  Name{' '}
+                  <input
+                    type="text"
+                    className="input"
+                    value={this.state.name}
+                    onChange={this.updateName.bind(this)}
+                  />
+                </div>
+                <span>
+                  Message{' '}
+                  <input
+                    type="text"
+                    className="input"
+                    value={this.state.message}
+                    onChange={this.updateMessage.bind(this)}
+                  />
+                </span>
+                <button
+                  onClick={this.sendMessage.bind(this)}
+                  className="button is-outlined is-primary is-medium send-message"
+                >
+                  Send
+            </button>
+                <div className="chat-messages">
+                  {this.state.messages.map(message => (
+                    <p>
+                      <strong>{message.name}:</strong> {message.message}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </article>
           </div>
         </div>
       </div>
