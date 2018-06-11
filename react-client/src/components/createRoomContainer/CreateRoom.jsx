@@ -2,6 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 // import uniqueString from 'unique-string';
 import CombatantsContainer from './CombatantsContainer.jsx';
+import { withRouter } from 'react-router-dom';
 
 class CreateRoom extends React.Component {
   constructor(props) {
@@ -14,6 +15,8 @@ class CreateRoom extends React.Component {
 
       zipValid: false,
       error: false,
+
+      roomLink: ''
     };
   }
 
@@ -31,24 +34,30 @@ class CreateRoom extends React.Component {
           members: this.props.combatants
         },
         (roomInfo, status) => {
+          console.log('ROOMINFO', roomInfo);
           console.log(`Room ${this.state.roomName} saved to the database:`, status);
           this.sendRoomEmail(roomInfo, this.props.combatants);
+          this.setState({
+            roomLink: roomInfo.uniqueid
+          }, () => {
+            this.props.history.push(`/rooms/${roomInfo.uniqueid}`)
+          });
         },
-      );
+      )
     }
   }
 
   sendRoomEmail(roomInfo, members) {
     members.forEach(email => {
-      $.post('/api/roomEmail', 
-      { 
-        email: email,
-        roomInfo: roomInfo
-      }, 
-      (data, status) => {
-        console.log('Room emails sent!', status);
-      })
-    })
+      $.post('/api/roomEmail',
+        {
+          email: email,
+          roomInfo: roomInfo
+        },
+        (data, status) => {
+          console.log('Room emails sent!', status);
+        });
+    });
   }
 
   // createUniqueID() {
@@ -164,12 +173,12 @@ class CreateRoom extends React.Component {
               onClick={this.createRoom.bind(this)}
               className="button is-primary is-large is-fullwidth">
               Fight!
-          </button>
+              </button>
           </div>
-        </div>
+        </div >
       </div >
     );
   }
 }
 
-export default CreateRoom;
+export default withRouter(CreateRoom);

@@ -153,6 +153,7 @@ app.post('/api/roomEmail', (req, res) => {
     });
 });
 
+
 //
 // ─── CREATE ROOMS AND GET ROOM INFO ─────────────────────────────────────────────
 //
@@ -181,6 +182,11 @@ app.get('/api/rooms/:roomID', (req, res) => {
   });
 });
 
+app.post('/room-redirect', (req, res) => {
+  console.log(req.body);
+  res.redirect(307, `/rooms/${req.body.id}`);
+});
+
 
 //
 // ─── EXTERNAL API LOGIC ─────────────────────────────────────────────────────────
@@ -206,6 +212,7 @@ app.post('/api/search', (req, res) => {
     res.send(JSON.parse(data.body));
   });
 });
+
 
 //
 // ─── HANDLE MESSAGES AND VOTES─────────────────────────────────────────────────────────
