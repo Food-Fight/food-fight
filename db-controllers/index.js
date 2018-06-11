@@ -157,7 +157,7 @@ const saveRestaurant = (name, roomID, callback) => {
     });
 };
 
-const updateVotes = (voter, name, roomId, callback) => {
+const updateVotes = (name, roomId, callback) => {
   db.models.Restaurant.findOne({
     where: {
       name,
