@@ -164,7 +164,6 @@ app.post('/api/save', (req, res) => {
     if (err) {
       console.log('Error saving room and members', err);
     } else {
-      // console.log('Room and members saved!', room, users);
       res.send(room[0].dataValues);
     }
   });
@@ -176,7 +175,6 @@ app.get('/api/rooms/:roomID', (req, res) => {
     if (err) {
       console.log('Error getting room members', err);
     } else {
-      // console.log('Room members fetched!', roomMembers);
       res.send(roomMembers);
     }
   });
@@ -219,13 +217,11 @@ app.post('/api/search', (req, res) => {
 //
 app.post('/api/messages', (req, res) => {
   const { message, roomID } = req.body;
-  // console.log('MESSAGE', message, 'ROOM', roomID);
   dbHelpers.saveMessage(message.name, message.message, roomID, (err, savedMessage) => {
     if (err) {
       console.log('Error saving message', err);
       res.status(404).end();
     } else {
-      // console.log(`Message saved`, savedMessage);
       res.end('Message saved', savedMessage);
     }
   });
@@ -233,7 +229,6 @@ app.post('/api/messages', (req, res) => {
 
 app.get('/api/messages/:roomID', (req, res) => {
   const { roomID } = req.params;
-  // console.log('ROOMID', roomID);
   dbHelpers.getMessages(roomID, (err, fetchedMessages) => {
     if (err) {
       console.log('Error retrieving messages', err);
@@ -251,7 +246,6 @@ app.post('/api/nominate', (req, res) => {
     if (err) {
       console.log('Error saving restaurant', err);
     } else {
-      // console.log('Restaurant saved!', restaurant);
       res.end('Restaurant saved!', restaurant);
     }
   });
@@ -263,7 +257,6 @@ app.post('/api/votes', (req, res) => {
     if (err) {
       console.log('Error upvoting restaurant', err);
     } else {
-      // console.log('Restaurant updated!', restaurant);
       res.end('Restaurant upvoted!', restaurant);
     }
   });
@@ -275,7 +268,6 @@ app.post('/api/vetoes', (req, res) => {
     if (err) {
       console.log('Error vetoing restaurant', err);
     } else {
-      // console.log('Restaurant vetoed!', restaurant);
       res.end('Restaurant vetoed!', restaurant);
     }
   });
@@ -287,7 +279,6 @@ app.get('/api/votes/:roomID', (req, res) => {
     if (err) {
       console.log('Error fetching scoreboard', err);
     } else {
-      // console.log('Scoreboard retrieved!', scores);
       res.send(scores);
     }
   });
@@ -309,6 +300,7 @@ db.models.sequelize.sync().then(() => {
     console.log('listening on port', process.env.PORT || 3000);
   });
 
+  // Server-side socket events
   const io = socket(server);
   io.on('connection', (newSocket) => {
     console.log('made socket connection', newSocket.id);

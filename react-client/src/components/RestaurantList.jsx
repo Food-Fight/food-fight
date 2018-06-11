@@ -1,25 +1,22 @@
 import React from 'react';
 import $ from 'jquery';
 import RestaurantListItem from './RestaurantListItem.jsx';
-import dummyData from '../dummyData.js';
 
 class RestaurantList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      restaurants: dummyData,
+      restaurants: [],
       isFirstTime: true,
     };
   }
   searchYelp() {
     $.post('/api/search', { zip: this.props.zipcode }, (data, status) => {
       console.log(`Requested Yelp search for ${this.props.zipcode}:`, status);
-      console.log(data);
       if (data.businesses) {
         this.setState({
           restaurants: data.businesses,
         });
-        console.log('YELP', this.state.restaurants);
       }
     });
   }
@@ -32,6 +29,7 @@ class RestaurantList extends React.Component {
     this.setNominee();
   }
 
+  //Attempt at getting Yelp information of the current nominee upon visiting the page
   setNominee() {
     if (this.state.isFirstTime && this.props.currentName) {
       this.state.restaurants.forEach(restaurant => {
