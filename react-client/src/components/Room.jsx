@@ -14,15 +14,12 @@ class Room extends React.Component {
       members: [],
       zipcode: undefined,
       currentSelection: undefined,
+      currentSelectionName: undefined,
       isNominating: true,
-      //This is just dummy data to test the Scoreboard
-      votes: [
-        { name: 'Imperial River Company', votes: 1, vetoed: true },
-        { name: 'The Riverside', votes: 2, vetoed: false },
-        { name: "Henry's Deli Mart", votes: 3, vetoed: true },
-      ],
+      votes: [],
       loggedInUsername: null,
       roomName: '',
+      hasVoted: false,
     };
     this.roomID = this.props.match.params.roomID;
 
@@ -47,6 +44,16 @@ class Room extends React.Component {
         this.getVotes();
       }
     });
+
+    this.socket.on('nominate', nominee => {
+      if (nominee.roomID === this.roomID) {
+        console.log('Received nomination', nominee);
+        this.setState({
+          currentSelection: nominee.restaurant,
+          hasVoted: false,
+        })
+      }
+    })
   }
 
   // Send post request to server to fetch room info when user visits link
@@ -94,23 +101,38 @@ class Room extends React.Component {
       this.setState({
         votes: restaurants,
       });
+      if (restaurants.length && !this.state.currentSelection) {
+        restaurants.forEach(restaurant => {
+          if (!restaurant.vetoed) {
+            this.setState({
+              currentSelectionName: restaurant.name,
+            });
+          }
+        });
+      }
     });
   }
 
-  nominateRestaurant(restaurant) {
+  nominateRestaurant(restaurant, reloading = false) {
     if (this.state.isNominating) {
       this.setState({
         currentSelection: restaurant,
         isNominating: false,
       });
-      let voteObj = {
-        name: restaurant.name,
-        roomID: this.roomID,
-      };
-      // console.log('VOTEOBJ', voteObj);
-      $.post('/api/nominate', voteObj).then(() => {
-        this.socket.emit('nominate', voteObj);
-      });
+      if (!reloading) {
+        let voteObj = {
+          name: restaurant.name,
+          roomID: this.roomID,
+        };
+        let nomObj = {
+          restaurant: restaurant,
+          roomID: this.roomID,
+        };
+        // console.log('VOTEOBJ', voteObj);
+        $.post('/api/nominate', voteObj).then(() => {
+          this.socket.emit('nominate', nomObj);
+        });
+      }
     }
   }
 
@@ -151,21 +173,29 @@ class Room extends React.Component {
     $.post('/api/votes', voteObj).then(() => {
       this.socket.emit('vote', voteObj);
     });
+    this.setState({
+      hasVoted: true,
+    });
   }
 
   voteVeto() {
-    let voteObj = {
-      name: this.state.currentSelection.name,
-      roomID: this.roomID,
-    };
     this.setState({
       isNominating: true,
-      currentSelection: undefined,
     });
-    // console.log('VOTEOBJ VOTE', voteObj);
-    $.post('/api/vetoes', voteObj).then(() => {
-      this.socket.emit('veto', voteObj);
-    });
+    if (this.state.currentSelection) {
+      let voteObj = {
+        name: this.state.currentSelection.name,
+        roomID: this.roomID,
+      };
+      // console.log('VOTEOBJ VOTE', voteObj);
+      $.post('/api/vetoes', voteObj).then(() => {
+        this.setState({
+          currentSelection: undefined,
+          hasVoted: true,
+        });
+        this.socket.emit('veto', voteObj);
+      });
+    }
   }
 
   render() {
@@ -174,7 +204,7 @@ class Room extends React.Component {
     ) : (
       ''
     );
-    let currentSelection = this.state.currentSelection ? (
+    let currentSelection = (this.state.currentSelection && !this.state.isNominating) ? (
       <CurrentSelection restaurant={this.state.currentSelection} />
     ) : (
       <div>Please nominate a restaurant</div>
@@ -212,7 +242,7 @@ class Room extends React.Component {
                       // <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
                       //   <strong>{restaurant.name}</strong> {restaurant.votes}
                       // </h5>
-                      <tr className={restaurant.vetoed ? 'is-selected' : ''}>
+                      <tr className={(restaurant.name === this.state.currentSelection.name) ? 'is-selected' : ''}>
                         <td>{restaurant.name}</td>
                         <td>{restaurant.votes}</td>
                       </tr>
@@ -224,7 +254,6 @@ class Room extends React.Component {
           <div id="chat" className="column">
             <h3 className="is-size-3">Welcome to Room {this.state.roomName}</h3>
             <div>
-              {/* Need to figure out how we're going to display room members and zipcode */}
               Members: {this.state.members.map(user => <span>{user.email} </span>)}
             </div>
             <div>Zipcode: {this.state.zipcode}</div>

@@ -8,6 +8,7 @@ class RestaurantList extends React.Component {
     super(props);
     this.state = {
       restaurants: dummyData,
+      isFirstTime: true,
     };
   }
   searchYelp() {
@@ -27,11 +28,28 @@ class RestaurantList extends React.Component {
     this.searchYelp();
   }
 
+  componentDidUpdate() {
+    this.setNominee();
+  }
+
+  setNominee() {
+    if (this.state.isFirstTime && this.props.currentName) {
+      this.state.restaurants.forEach(restaurant => {
+        if (restaurant.name === this.props.currentName) {
+          this.props.nominate(restaurant, true);
+          this.setState({
+            isFirstTime: false,
+          });
+        }
+      });
+    }
+  }
+
   render() {
     return (
       <div>
         {this.state.restaurants.map(restaurant => {
-          return <RestaurantListItem restaurant={restaurant} nominate={this.props.nominate}/>;
+          return <RestaurantListItem restaurant={restaurant} nominate={this.props.nominate} />;
         })}
       </div>
     );
