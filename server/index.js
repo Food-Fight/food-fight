@@ -236,15 +236,26 @@ app.get('/api/messages/:roomID', (req, res) => {
   });
 });
 
-app.post('/api/votes/', (req, res) => {
-  const { name, roomID, votes, vetoed } = req.body;
-  // TO DO: Store vote information for a given restaurant in the database
-  dbHelpers.saveRestaurant(name, roomID, votes, vetoed, (err, restaurant) => {
+app.post('/api/nominate', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.saveRestaurant(name, roomID, (err, restaurant) => {
     if (err) {
       console.log('Error saving restaurant', err);
     } else {
       console.log('Restaurant saved!', restaurant);
       res.end('Restaurant saved!');
+    }
+  });
+});
+
+app.post('/api/votes', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.updateRestaurant(name, roomID, (err, restaurant) => {
+    if (err) {
+      console.log('Error saving restaurant', err);
+    } else {
+      console.log('Restaurant updated!', restaurant);
+      res.end('Restaurant updated!');
     }
   });
 });
@@ -277,6 +288,11 @@ db.models.sequelize.sync().then(() => {
     newSocket.on('chat', (data) => {
       console.log('Received chat!', data);
       io.sockets.emit('chat', data.roomID);
+    });
+
+    newSocket.on('nominate', (data) => {
+      console.log('Nomination received!', data);
+      io.sockets.emit('nominate', data.roomID);
     });
 
     newSocket.on('vote', (data) => {
