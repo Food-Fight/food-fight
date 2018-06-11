@@ -218,93 +218,97 @@ class Room extends React.Component {
             </div>
           </div>
         </section>
-        <div
-          className="tile is-ancestor"
-          style={{ marginTop: '15px' }}>
-          <div className="tile is-parent">
-            {/* <div className="is-divider" /> */}
-            <article className="tile is-child notification">
-              <div id="yelp-list">
-                <p className="title">Local Resturants</p>
-                {restaurantList}
+        <div className="columns">
+          <div
+            className="tile is-ancestor"
+            style={{ marginTop: '15px' }}>
+            <div className="column is-6">
+              <div className="tile is-parent">
+                {/* <div className="is-divider" /> */}
+                <article className="tile is-child notification">
+                  <div id="yelp-list">
+                    <p className="title">Local Resturants</p>
+                    {restaurantList}
+                  </div>
+                </article>
               </div>
-            </article>
-          </div>
-          <div className="tile is-parent">
-            <article className="tile is-child notification">
-              <div id="current-resturant">
-                <p className="title">Current Selection</p>
-                {currentSelection}
-                <button onClick={this.voteApprove} className="button is-success">
-                  Approve
+            </div>
+            <div className="column">
+              <div className="tile is-parent is-vertical">
+                <article className="tile is-child notification">
+                  <div id="current-resturant">
+                    <p className="title">Current Selection</p>
+                    {currentSelection}
+                    <button onClick={this.voteApprove} className="button is-success">
+                      Approve
             </button>
-                <button onClick={this.voteVeto} className="button is-danger">
-                  Veto
+                    <button onClick={this.voteVeto} className="button is-danger">
+                      Veto
             </button>
-                <div>
-                  <h3>Scoreboard</h3>
-                  <table className="table is-striped is-bordered is-fullwidth">
-                    <thead>
-                      <th>Resturant</th>
-                      <th>Votes</th>
-                    </thead>
-                    <tbody>
-                      {this.state.votes
-                        .sort((a, b) => {
-                          return b.votes - a.votes;
-                        })
-                        .map(restaurant => (
-                          // <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
-                          //   <strong>{restaurant.name}</strong> {restaurant.votes}
-                          // </h5>
-                          <tr className={(restaurant.name === this.state.currentSelection.name) ? 'is-selected' : ''}>
-                            <td>{restaurant.name}</td>
-                            <td>{restaurant.votes}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
+                    <div>
+                      <h3>Scoreboard</h3>
+                      <table className="table is-striped is-bordered is-fullwidth">
+                        <thead>
+                          <th>Resturant</th>
+                          <th>Votes</th>
+                        </thead>
+                        <tbody>
+                          {this.state.votes
+                            .sort((a, b) => {
+                              return b.votes - a.votes;
+                            })
+                            .map(restaurant => (
+                              // <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
+                              //   <strong>{restaurant.name}</strong> {restaurant.votes}
+                              // </h5>
+                              <tr className={(restaurant.name === this.state.currentSelection.name) ? 'is-selected' : ''}>
+                                <td>{restaurant.name}</td>
+                                <td>{restaurant.votes}</td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </article>
+                <article className="tile is-child notification">
+                  <div id="chat">
+                    <h4 className="is-size-4">Live Chat</h4>
+                    <div>
+                      Name{' '}
+                      <input
+                        type="text"
+                        className="input"
+                        value={this.state.name}
+                        onChange={this.updateName.bind(this)}
+                      />
+                    </div>
+                    <span>
+                      Message{' '}
+                      <input
+                        type="text"
+                        className="input"
+                        value={this.state.message}
+                        onChange={this.updateMessage.bind(this)}
+                      />
+                    </span>
+                    <button
+                      onClick={this.sendMessage.bind(this)}
+                      className="button is-outlined is-primary is-medium send-message"
+                    >
+                      Send
+            </button>
+                    <div className="chat-messages">
+                      {this.state.messages.map(message => (
+                        <p>
+                          <strong>{message.name}:</strong> {message.message}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                </article>
               </div>
-            </article>
-          </div>
-          <div className="tile is-parent">
-            <article className="tile is-child notification">
-              <div id="chat">
-                <h4 className="is-size-4">Live Chat</h4>
-                <div>
-                  Name{' '}
-                  <input
-                    type="text"
-                    className="input"
-                    value={this.state.name}
-                    onChange={this.updateName.bind(this)}
-                  />
-                </div>
-                <span>
-                  Message{' '}
-                  <input
-                    type="text"
-                    className="input"
-                    value={this.state.message}
-                    onChange={this.updateMessage.bind(this)}
-                  />
-                </span>
-                <button
-                  onClick={this.sendMessage.bind(this)}
-                  className="button is-outlined is-primary is-medium send-message"
-                >
-                  Send
-            </button>
-                <div className="chat-messages">
-                  {this.state.messages.map(message => (
-                    <p>
-                      <strong>{message.name}:</strong> {message.message}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </article>
+            </div>
           </div>
         </div>
       </div>
