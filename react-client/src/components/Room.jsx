@@ -190,15 +190,27 @@ class Room extends React.Component {
             </button>
             <div>
               <h3 className="is-size-3">Scoreboard</h3>
-              {this.state.votes
-                .sort((a, b) => {
-                  return b.votes - a.votes;
-                })
-                .map(restaurant => (
-                  <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
-                    <strong>{restaurant.name}</strong> {restaurant.votes}
-                  </h5>
-                ))}
+              <table className="table is-striped is-bordered is-fullwidth">
+                <thead>
+                  <th>Resturant</th>
+                  <th>Votes</th>
+                </thead>
+                <tbody>
+                  {this.state.votes
+                    .sort((a, b) => {
+                      return b.votes - a.votes;
+                    })
+                    .map(restaurant => (
+                      // <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
+                      //   <strong>{restaurant.name}</strong> {restaurant.votes}
+                      // </h5>
+                      <tr className={restaurant.vetoed ? 'is-selected' : ''}>
+                        <td>{restaurant.name}</td>
+                        <td>{restaurant.votes}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
           </div>
           <div id="chat" className="column">
