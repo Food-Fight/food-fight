@@ -11,9 +11,9 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,
-  // dialectOptions: {
-  //   ssl: true,
-  // },
+  dialectOptions: {
+    ssl: true,
+  },
 });
 
 // testing connection
@@ -31,6 +31,7 @@ const models = {
   Room: sequelize.import('./room'),
   Restaurant: sequelize.import('./restaurant'),
   Message: sequelize.import('./message'),
+  RestaurantUser: sequelize.import('./restaurantUser'),
 };
 
 // create relationships between all the tables that have associations

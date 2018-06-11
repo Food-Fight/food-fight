@@ -61,17 +61,8 @@ class Room extends React.Component {
     this.getMessages();
     this.getRoomInfo();
     this.getVotes();
-  }
-
-  checkLogin() {
-    $.get('/checklogin').then(res => {
-      console.log('THIS IS RES', res);
-      if (res.data.user) {
-        console.log('Logged in as:', res.data.user.email);
-        this.setState({
-          loggedInUsername: res.data.user.email,
-        });
-      }
+    this.setState({
+      loggedInUsername: this.props.username
     });
   }
 
@@ -166,10 +157,11 @@ class Room extends React.Component {
     the given restaurant to prevent duplicate votes */
     // console.log('STATE', this.state);
     let voteObj = {
+      voter: this.state.loggedInUsername,
       name: this.state.currentSelection.name,
       roomID: this.roomID,
     };
-    // console.log('VOTEOBJ VOTE', voteObj);
+      console.log('VOTEOBJ VOTE', voteObj);
     $.post('/api/votes', voteObj).then(() => {
       this.socket.emit('vote', voteObj);
     });
