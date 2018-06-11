@@ -21,7 +21,10 @@ class CreateRoom extends React.Component {
   }
 
   createRoom() {
-    if (this.state.roomName.length === 0 || !this.state.zipValid || this.props.combatants.length === 0) {
+    if (this.props.loggedIn === false ||
+      this.state.roomName.length === 0 ||
+      !this.state.zipValid ||
+      this.props.combatants.length === 0) {
       this.setState({
         error: true,
       });
@@ -109,15 +112,29 @@ class CreateRoom extends React.Component {
     };
 
     // Error creating room
-    const creatRoomError = this.state.error ? (
-      <section className="section login-error" style={{ color: 'white' }}>
-        <div className="container">
-          <h2 className="subtitle">
-            You must have a name, the zip must be valid and the arena must have combatants.
-          </h2>
-        </div>
-      </section>
-    ) : null;
+    const createRoomError = () => {
+      if (!this.props.loggedIn) {
+        return (
+          <section className="section login-error" style={{ color: 'white' }}>
+            <div className="container">
+              <h2 className="subtitle">
+                Please login to create a room.
+              </h2>
+            </div>
+          </section>
+        )
+      } else {
+        return this.state.error ? (
+          <section className="section login-error" style={{ color: 'white' }}>
+            <div className="container">
+              <h2 className="subtitle">
+                You must have a name, the zip must be valid and the arena must have combatants.
+              </h2>
+            </div>
+          </section>
+        ) : null;
+      }
+    };
 
     return (
       <div>
@@ -125,7 +142,7 @@ class CreateRoom extends React.Component {
           <p className="title">
             Create Your Arena
           </p>
-          {creatRoomError}
+          {createRoomError()}
           <div className="columns">
             <div className="column is-three-quarters">
               <div className="field">
