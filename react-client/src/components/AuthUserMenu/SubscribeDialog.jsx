@@ -12,6 +12,8 @@ class SubscribeDialog extends React.Component {
       password: '',
       zip: '',
       zipValid: false,
+
+      error: false
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -50,7 +52,7 @@ class SubscribeDialog extends React.Component {
       });
     } else {
       this.setState({
-        email: '',
+        email: e.target.value,
         emailValid: false
       });
     }
@@ -70,17 +72,13 @@ class SubscribeDialog extends React.Component {
       });
     } else {
       this.setState({
-        zip: '',
+        zip: e.target.value,
         zipValid: false
       });
     }
   }
 
   handleSubscribe() {
-    console.log('ZIP', this.state.zip);
-    this.setState({
-      open: false
-    });
     this.props.subscribe(
       this.state.email,
       this.state.password,
@@ -119,6 +117,17 @@ class SubscribeDialog extends React.Component {
       </p>
     );
 
+    // Login error
+    const subscribeError = this.props.subscribeError ? (
+      <section className="section login-error">
+        <div className="container">
+          <h2 className="subtitle">
+            That username is already taken.
+              </h2>
+        </div>
+      </section>
+    ) : null;
+
     return (
       <div>
         <a className="button is-primary" onClick={this.handleClickOpen}>
@@ -138,6 +147,7 @@ class SubscribeDialog extends React.Component {
               ></button>
             </header>
             <section className="modal-card-body">
+              {subscribeError}
               <div className="field">
                 <label className="label">Email</label>
                 <div className="control has-icons-left">
