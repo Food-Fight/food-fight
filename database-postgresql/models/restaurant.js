@@ -7,10 +7,12 @@ module.exports = (sequelize, DataTypes) => {
     votes: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     vetoed: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: false,
     },
   });
 
