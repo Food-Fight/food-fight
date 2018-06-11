@@ -90,7 +90,7 @@ const getRoomMembers = (roomID, callback) => {
     }],
   })
     .then((users) => {
-      console.log('Success getting users', users);
+      // console.log('Success getting users', users);
       callback(null, users);
     })
     .catch((error) => {
@@ -156,10 +156,30 @@ const updateRestaurant = (name, roomId, callback) => {
     });
 };
 
+const getScoreboard = (roomID, callback) => {
+  db.models.Restaurant.findAll({
+    attributes: ['name', 'votes', 'vetoed'],
+    include: [{
+      model: db.models.Room,
+      where: { uniqueid: roomID },
+      attributes: [],
+    }],
+    raw: true,
+  })
+    .then((scores) => {
+      // console.log('SCOREBOARD', scores);
+      callback(null, scores);
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
 module.exports = {
   saveMember,
   saveRoomAndMembers,
   getRoomMembers,
   saveRestaurant,
   updateRestaurant,
+  getScoreboard,
 };
