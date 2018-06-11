@@ -4,10 +4,6 @@ App to vote over what local resturant to eat at with your friends or coworkers. 
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
 ```
 npm install
 npm test
@@ -39,8 +35,8 @@ DB_PASSWORD=
 ## Built With
 
 - [React](https://reactjs.org/)
-- [Postgres](https://www.postgresql.org/) -
-- [Bulma](https://bulma.io/) -
+- [Postgres](https://www.postgresql.org/)
+- [Bulma](https://bulma.io/)
 - [Passport](http://www.passportjs.org/)
 
 ## Contributing
