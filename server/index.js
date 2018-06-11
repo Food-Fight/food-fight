@@ -333,5 +333,10 @@ db.models.sequelize.sync().then(() => {
       io.sockets.emit('veto', data.roomID);
     });
 
+    newSocket.on('join', (roomID) => {
+      console.log('Received new member!', roomID);
+      io.sockets.emit('join', roomID);
+    });
+
   });
 });

@@ -51,7 +51,16 @@ class Room extends React.Component {
         this.setState({
           currentSelection: nominee.restaurant,
           hasVoted: false,
-        })
+        });
+      }
+    });
+
+    this.socket.on('join', roomID => {
+      if (roomID === this.roomID) {
+        console.log('Received new member');
+        if (this.state.currentSelection) {
+          this.socket.emit('nominate', {'restaurant': this.state.currentSelection, 'roomID': this.roomID});
+        }
       }
     })
   }
@@ -61,6 +70,7 @@ class Room extends React.Component {
     this.getMessages();
     this.getRoomInfo();
     this.getVotes();
+    this.socket.emit('join', this.roomID);
   }
 
   checkLogin() {
@@ -201,7 +211,7 @@ class Room extends React.Component {
 
   render() {
     let restaurantList = this.state.zipcode ? (
-      <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} />
+      <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} currentName={this.currentSelectionName}/>
     ) : (
       ''
     );
