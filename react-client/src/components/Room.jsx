@@ -245,7 +245,7 @@ class Room extends React.Component {
                       // <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
                       //   <strong>{restaurant.name}</strong> {restaurant.votes}
                       // </h5>
-                      <tr className={(restaurant.name === this.state.currentSelection.name) ? 'is-selected' : ''}>
+                      <tr className={(this.state.currentSelection && restaurant.name === this.state.currentSelection.name) ? 'is-selected' : ''}>
                         <td>{restaurant.name}</td>
                         <td>{restaurant.votes}</td>
                       </tr>
