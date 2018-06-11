@@ -54,19 +54,9 @@ class Room extends React.Component {
     this.getMessages();
     this.getRoomInfo();
     this.getVotes();
-  }
-
-  checkLogin() {
-    $.get('/checklogin')
-      .then(res => {
-        console.log('THIS IS RES', res);
-        if (res.data.user) {
-          console.log('Logged in as:', res.data.user.email);
-          this.setState({
-            loggedInUsername: res.data.user.email,
-          });
-        }
-      });
+    this.setState({
+      loggedInUsername: this.props.username
+    });
   }
   
   getMessages() {
