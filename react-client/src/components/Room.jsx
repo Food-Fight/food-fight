@@ -135,10 +135,11 @@ class Room extends React.Component {
     the given restaurant to prevent duplicate votes */
     // console.log('STATE', this.state);
     let voteObj = {
+      voter: this.state.loggedInUsername,
       name: this.state.currentSelection.name,
       roomID: this.roomID,
     };
-    // console.log('VOTEOBJ VOTE', voteObj);
+      console.log('VOTEOBJ VOTE', voteObj);
     $.post('/api/votes', voteObj).then(() => {
       this.socket.emit('vote', voteObj);
     });
