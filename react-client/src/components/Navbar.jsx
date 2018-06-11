@@ -21,7 +21,8 @@ class Navbar extends React.Component {
         </div>,
         <div className="control" key="2">
           <SubscribeDialog
-            subscribe={this.props.subscribe} />
+            subscribe={this.props.subscribe}
+            subscribeError={this.props.subscribeError} />
         </div>]
       );
 
