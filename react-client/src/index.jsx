@@ -91,8 +91,8 @@ class App extends React.Component {
       })
       .catch(() => {
         this.setState({
-          loginError: true
-        })
+          subscribeError: true
+        });
       });
   }
 
@@ -148,7 +148,8 @@ class App extends React.Component {
               subscribe={this.subscribe.bind(this)}
               loggedIn={this.state.loggedIn}
               username={this.state.loggedInUsername}
-              error={this.state.loginError} />
+              error={this.state.loginError}
+              subscribeError={this.state.subscribeError} />
           </div >
           <Route exact path="/" render={
             (props) => <MainView

@@ -45,10 +45,10 @@ app.use(passport.session());
 auth.passportHelper(passport);
 app.use(flash());
 
-app.use((req, res, next) => {
-  console.log(req.session);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(req.session);
+//   next();
+// });
 
 
 //
