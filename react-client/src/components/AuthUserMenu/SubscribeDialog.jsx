@@ -45,7 +45,6 @@ class SubscribeDialog extends React.Component {
   }
 
   enterEmail(e) {
-    console.log(e.target.value);
     if (validator.isEmail(e.target.value)) {
       this.setState({
         email: e.target.value,

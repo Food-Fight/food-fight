@@ -127,6 +127,7 @@ class App extends React.Component {
         console.log('Logging out');
         this.setState({
           loggedIn: false,
+          loggedInUsername: '',
           loginError: false
         });
       })
