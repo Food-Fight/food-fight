@@ -36,7 +36,7 @@ class Room extends React.Component {
         this.setState({ 
           messages: [...this.state.messages, message.message], 
         }); 
-        //this.getMessages();
+        this.getMessages();
       }
     });
     this.socket.on('vote', roomID => {
@@ -49,14 +49,10 @@ class Room extends React.Component {
 
   // Send post request to server to fetch room info when user visits link
   componentDidMount() {
-    //this.getMessages();
+    this.getMessages();
     this.getRoomInfo();
     this.getVotes();
   }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log(prevProps, prevState);
-  // }
 
   checkLogin() {
     $.get('/checklogin')
