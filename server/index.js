@@ -157,13 +157,13 @@ app.post('/api/roomEmail', (req, res) => {
 // ─── CREATE ROOMS AND GET ROOM INFO ─────────────────────────────────────────────
 //
 app.post('/api/save', (req, res) => {
-  console.log('NEW ROOM DATA', req.body);
+  // console.log('NEW ROOM DATA', req.body);
   const { roomName, zip, members } = req.body;
   dbHelpers.saveRoomAndMembers(roomName, zip, members, (err, room, users) => {
     if (err) {
       console.log('Error saving room and members', err);
     } else {
-      console.log('Room and members saved!', room, users);
+      // console.log('Room and members saved!', room, users);
       res.send(room[0].dataValues);
     }
   });
@@ -175,7 +175,7 @@ app.get('/api/rooms/:roomID', (req, res) => {
     if (err) {
       console.log('Error getting room members', err);
     } else {
-      console.log('Room members fetched!', roomMembers);
+      // console.log('Room members fetched!', roomMembers);
       res.send(roomMembers);
     }
   });
@@ -240,9 +240,9 @@ app.post('/api/nominate', (req, res) => {
   const { name, roomID } = req.body;
   dbHelpers.saveRestaurant(name, roomID, (err, restaurant) => {
     if (err) {
-      console.log('Error saving restaurant', err);
+      // console.log('Error saving restaurant', err);
     } else {
-      console.log('Restaurant saved!', restaurant);
+      // console.log('Restaurant saved!', restaurant);
       res.end('Restaurant saved!');
     }
   });
@@ -254,7 +254,7 @@ app.post('/api/votes', (req, res) => {
     if (err) {
       console.log('Error saving restaurant', err);
     } else {
-      console.log('Restaurant updated!', restaurant);
+      // console.log('Restaurant updated!', restaurant);
       res.end('Restaurant updated!');
     }
   });
@@ -262,7 +262,14 @@ app.post('/api/votes', (req, res) => {
 
 app.get('/api/votes/:roomID', (req, res) => {
   const { roomID } = req.params;
-  // TO DO: Get vote informations for all restaurants from the given room
+  dbHelpers.getScoreboard(roomID, (err, scores) => {
+    if (err) {
+      console.log('Error fetching scoreboard', err);
+    } else {
+      // console.log('Scoreboard retrieved!', scores);
+      res.send(scores);
+    }
+  });
 });
 
 
