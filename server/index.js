@@ -250,12 +250,24 @@ app.post('/api/nominate', (req, res) => {
 
 app.post('/api/votes', (req, res) => {
   const { name, roomID } = req.body;
-  dbHelpers.updateRestaurant(name, roomID, (err, restaurant) => {
+  dbHelpers.updateVotes(name, roomID, (err, restaurant) => {
     if (err) {
-      console.log('Error saving restaurant', err);
+      console.log('Error upvoting restaurant', err);
     } else {
       // console.log('Restaurant updated!', restaurant);
-      res.end('Restaurant updated!');
+      res.end('Restaurant upvoted!', restaurant);
+    }
+  });
+});
+
+app.post('/api/vetoes', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.updateVetoes(name, roomID, (err, restaurant) => {
+    if (err) {
+      console.log('Error vetoing restaurant', err);
+    } else {
+      // console.log('Restaurant vetoed!', restaurant);
+      res.end('Restaurant vetoed!', restaurant);
     }
   });
 });
@@ -306,5 +318,10 @@ db.models.sequelize.sync().then(() => {
       console.log('Received vote!', data);
       io.sockets.emit('vote', data.roomID);
     });
-  })
+
+    newSocket.on('veto', (data) => {
+      console.log('Received veto!', data);
+      io.sockets.emit('veto', data.roomID);
+    });
+  });
 });

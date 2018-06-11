@@ -60,7 +60,7 @@ class Room extends React.Component {
   
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
-      console.log('GOT MESSAGES', messages);
+      // console.log('GOT MESSAGES', messages);
       this.setState({
         messages: messages,
       });
@@ -69,7 +69,7 @@ class Room extends React.Component {
 
   getRoomInfo() {
     $.get(`/api/rooms/${this.roomID}`).then(roomMembers => {
-      console.log('GOT ROOM MEMBERS', roomMembers);
+      // console.log('GOT ROOM MEMBERS', roomMembers);
       this.setState({
         members: roomMembers,
         zipcode: roomMembers[0].rooms[0].zipcode,
@@ -80,7 +80,7 @@ class Room extends React.Component {
 
   getVotes() {
     $.get(`/api/votes/${this.roomID}`).then(restaurants => {
-      console.log('GOT VOTES', restaurants);
+      // console.log('GOT VOTES', restaurants);
       this.setState({
         votes: restaurants,
       });
@@ -89,7 +89,6 @@ class Room extends React.Component {
 
   nominateRestaurant(restaurant) {
     if (this.state.isNominating) {
-      // TO DO: Record in databse that previous restaurant was vetoed
       this.setState({
         currentSelection: restaurant,
         isNominating: false,
@@ -98,7 +97,7 @@ class Room extends React.Component {
         name: restaurant.name,
         roomID: this.roomID,
       };
-      console.log('VOTEOBJ', voteObj);
+      // console.log('VOTEOBJ', voteObj);
       $.post('/api/nominate', voteObj).then(() => {
         this.socket.emit('nominate', voteObj);
       });
@@ -133,21 +132,29 @@ class Room extends React.Component {
   voteApprove() {
     /* TO DO: Check if a user has already voted for 
     the given restaurant to prevent duplicate votes */
-    console.log('STATE', this.state);
+    // console.log('STATE', this.state);
     let voteObj = {
       name: this.state.currentSelection.name,
       roomID: this.roomID,
     };
-    console.log('VOTEOBJ VOTE', voteObj);
+    // console.log('VOTEOBJ VOTE', voteObj);
     $.post('/api/votes', voteObj).then(() => {
       this.socket.emit('vote', voteObj);
     });
   }
 
   voteVeto() {
+    let voteObj = {
+      name: this.state.currentSelection.name,
+      roomID: this.roomID,
+    };
     this.setState({
       isNominating: true,
       currentSelection: undefined,
+    });
+    // console.log('VOTEOBJ VOTE', voteObj);
+    $.post('/api/vetoes', voteObj).then(() => {
+      this.socket.emit('veto', voteObj);
     });
   }
 
