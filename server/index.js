@@ -240,10 +240,10 @@ app.post('/api/nominate', (req, res) => {
   const { name, roomID } = req.body;
   dbHelpers.saveRestaurant(name, roomID, (err, restaurant) => {
     if (err) {
-      // console.log('Error saving restaurant', err);
+      console.log('Error saving restaurant', err);
     } else {
       // console.log('Restaurant saved!', restaurant);
-      res.end('Restaurant saved!');
+      res.end('Restaurant saved!', restaurant);
     }
   });
 });

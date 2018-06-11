@@ -107,15 +107,13 @@ const saveRestaurant = (name, roomID, callback) => {
     raw: true,
   });
 
-  db.models.Restaurant.findOrCreate({
-    where: {
-      name,
-    },
+  db.models.Restaurant.create({
+    name,
   })
     .then((restaurant) => {
       Promise.all([promisedRoom])
         .then((room) => {
-          restaurant[0].setRoom(room[0].id);
+          restaurant.setRoom(room[0].id);
           callback(null, restaurant);
         })
         .catch((error) => {
