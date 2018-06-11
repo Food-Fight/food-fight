@@ -35,10 +35,10 @@ class Room extends React.Component {
     this.socket.on('chat', message => {
       if (message.roomID === this.roomID) {
         console.log('Received message', message);
-        this.setState({
-          messages: [...this.state.messages, message.message],
-        });
-        //this.getMessages();
+        this.setState({ 
+          messages: [...this.state.messages, message.message], 
+        }); 
+        this.getMessages();
       }
     });
     this.socket.on('vote', roomID => {
@@ -51,18 +51,27 @@ class Room extends React.Component {
 
   // Send post request to server to fetch room info when user visits link
   componentDidMount() {
-    //this.getMessages();
+    this.getMessages();
     this.getRoomInfo();
     this.getVotes();
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log(prevProps, prevState);
-  // }
-
+  checkLogin() {
+    $.get('/checklogin')
+      .then(res => {
+        console.log('THIS IS RES', res);
+        if (res.data.user) {
+          console.log('Logged in as:', res.data.user.email);
+          this.setState({
+            loggedInUsername: res.data.user.email,
+          });
+        }
+      });
+  }
+  
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
-      // console.log('GOT MESSAGES', messages);
+      console.log('GOT MESSAGES', messages);
       this.setState({
         messages: messages,
       });
