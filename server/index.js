@@ -45,6 +45,11 @@ app.use(passport.session());
 auth.passportHelper(passport);
 app.use(flash());
 
+app.use((req, res, next) => {
+  console.log(req.session);
+  next();
+});
+
 
 //
 // ─── GOOGLE OAUTH ENDPOINTS ─────────────────────────────────────────────────────
@@ -332,6 +337,5 @@ db.models.sequelize.sync().then(() => {
       console.log('Received veto!', data);
       io.sockets.emit('veto', data.roomID);
     });
-
   });
 });
