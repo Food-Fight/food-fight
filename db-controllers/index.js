@@ -90,7 +90,7 @@ const getRoomMembers = (roomID, callback) => {
     }],
   })
     .then((users) => {
-      console.log('Success getting users', users);
+      // console.log('Success getting users', users);
       callback(null, users);
     })
     .catch((error) => {
@@ -98,7 +98,7 @@ const getRoomMembers = (roomID, callback) => {
     });
 };
 
-const saveRestaurant = (name, roomID, votes, vetoed, callback) => {
+const saveRestaurant = (name, roomID, callback) => {
   const promisedRoom = db.models.Room.findOne({
     where: {
       uniqueid: roomID,
@@ -107,17 +107,13 @@ const saveRestaurant = (name, roomID, votes, vetoed, callback) => {
     raw: true,
   });
 
-  db.models.Restaurant.findOrCreate({
-    where: {
-      name,
-      votes,
-      vetoed,
-    },
+  db.models.Restaurant.create({
+    name,
   })
     .then((restaurant) => {
       Promise.all([promisedRoom])
         .then((room) => {
-          restaurant[0].setRoom(room[0].id);
+          restaurant.setRoom(room[0].id);
           callback(null, restaurant);
         })
         .catch((error) => {
@@ -129,9 +125,88 @@ const saveRestaurant = (name, roomID, votes, vetoed, callback) => {
     });
 };
 
+const updateVotes = (name, roomId, callback) => {
+  db.models.Restaurant.findOne({
+    where: {
+      name,
+    },
+    include: [{
+      model: db.models.Room,
+      where: {
+        uniqueid: roomId,
+      },
+    }],
+  })
+    .then((restaurant) => {
+      const currentVotes = restaurant.dataValues.votes;
+      restaurant.update({
+        votes: currentVotes + 1,
+      })
+        .then((result) => {
+          callback(null, result);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
+const updateVetoes = (name, roomId, callback) => {
+  db.models.Restaurant.findOne({
+    where: {
+      name,
+    },
+    include: [{
+      model: db.models.Room,
+      where: {
+        uniqueid: roomId,
+      },
+    }],
+  })
+    .then((restaurant) => {
+      restaurant.update({
+        vetoed: true,
+      })
+        .then((result) => {
+          callback(null, result);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
+const getScoreboard = (roomID, callback) => {
+  db.models.Restaurant.findAll({
+    attributes: ['name', 'votes', 'vetoed'],
+    include: [{
+      model: db.models.Room,
+      where: { uniqueid: roomID },
+      attributes: [],
+    }],
+    raw: true,
+  })
+    .then((scores) => {
+      // console.log('SCOREBOARD', scores);
+      callback(null, scores);
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
 module.exports = {
   saveMember,
   saveRoomAndMembers,
   getRoomMembers,
   saveRestaurant,
+  updateVotes,
+  updateVetoes,
+  getScoreboard,
 };

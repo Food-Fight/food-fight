@@ -157,13 +157,13 @@ app.post('/api/roomEmail', (req, res) => {
 // ─── CREATE ROOMS AND GET ROOM INFO ─────────────────────────────────────────────
 //
 app.post('/api/save', (req, res) => {
-  console.log('NEW ROOM DATA', req.body);
+  // console.log('NEW ROOM DATA', req.body);
   const { roomName, zip, members } = req.body;
   dbHelpers.saveRoomAndMembers(roomName, zip, members, (err, room, users) => {
     if (err) {
       console.log('Error saving room and members', err);
     } else {
-      console.log('Room and members saved!', room, users);
+      // console.log('Room and members saved!', room, users);
       res.send(room[0].dataValues);
     }
   });
@@ -175,7 +175,7 @@ app.get('/api/rooms/:roomID', (req, res) => {
     if (err) {
       console.log('Error getting room members', err);
     } else {
-      console.log('Room members fetched!', roomMembers);
+      // console.log('Room members fetched!', roomMembers);
       res.send(roomMembers);
     }
   });
@@ -236,22 +236,52 @@ app.get('/api/messages/:roomID', (req, res) => {
   // });
 });
 
-app.post('/api/votes/', (req, res) => {
-  const { name, roomID, votes, vetoed } = req.body;
-  // TO DO: Store vote information for a given restaurant in the database
-  dbHelpers.saveRestaurant(name, roomID, votes, vetoed, (err, restaurant) => {
+app.post('/api/nominate', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.saveRestaurant(name, roomID, (err, restaurant) => {
     if (err) {
       console.log('Error saving restaurant', err);
     } else {
-      console.log('Restaurant saved!', restaurant);
-      res.end('Restaurant saved!');
+      // console.log('Restaurant saved!', restaurant);
+      res.end('Restaurant saved!', restaurant);
+    }
+  });
+});
+
+app.post('/api/votes', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.updateVotes(name, roomID, (err, restaurant) => {
+    if (err) {
+      console.log('Error upvoting restaurant', err);
+    } else {
+      // console.log('Restaurant updated!', restaurant);
+      res.end('Restaurant upvoted!', restaurant);
+    }
+  });
+});
+
+app.post('/api/vetoes', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.updateVetoes(name, roomID, (err, restaurant) => {
+    if (err) {
+      console.log('Error vetoing restaurant', err);
+    } else {
+      // console.log('Restaurant vetoed!', restaurant);
+      res.end('Restaurant vetoed!', restaurant);
     }
   });
 });
 
 app.get('/api/votes/:roomID', (req, res) => {
   const { roomID } = req.params;
-  // TO DO: Get vote informations for all restaurants from the given room
+  dbHelpers.getScoreboard(roomID, (err, scores) => {
+    if (err) {
+      console.log('Error fetching scoreboard', err);
+    } else {
+      // console.log('Scoreboard retrieved!', scores);
+      res.send(scores);
+    }
+  });
 });
 
 
@@ -279,9 +309,19 @@ db.models.sequelize.sync().then(() => {
       io.sockets.emit('chat', data);
     });
 
+    newSocket.on('nominate', (data) => {
+      console.log('Nomination received!', data);
+      io.sockets.emit('nominate', data.roomID);
+    });
+
     newSocket.on('vote', (data) => {
       console.log('Received vote!', data);
       io.sockets.emit('vote', data.roomID);
     });
-  })
+
+    newSocket.on('veto', (data) => {
+      console.log('Received veto!', data);
+      io.sockets.emit('veto', data.roomID);
+    });
+  });
 });
