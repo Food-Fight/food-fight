@@ -15,8 +15,12 @@ class Room extends React.Component {
       zipcode: undefined,
       currentSelection: undefined,
       isNominating: true,
-      restaurants: [],
+      //This is just dummy data to test the Scoreboard
+      votes: [{'name': 'Imperial River Company', 'votes': 1, "vetoed": true},
+              {'name': 'The Riverside', 'votes': 2, "vetoed": false},
+              {'name': 'Henry\'s Deli Mart', 'votes': 3, "vetoed": true}],
       loggedInUsername: null,
+      roomName: '',
     };
     this.roomID = this.props.match.params.roomID;
 
@@ -26,10 +30,13 @@ class Room extends React.Component {
     this.voteVeto = this.voteVeto.bind(this);
 
     this.socket = io.connect(process.env.PORT || 'http://localhost:3000');
-    this.socket.on('chat', roomID => {
-      if (roomID === this.roomID) {
-        console.log('Received message');
-        this.getMessages();
+    this.socket.on('chat', message => {
+      if (message.roomID === this.roomID) {
+        console.log('Received message', message);
+        this.setState({ 
+          messages: [...this.state.messages, message.message], 
+        }); 
+        //this.getMessages();
       }
     });
     this.socket.on('vote', roomID => {
@@ -42,7 +49,7 @@ class Room extends React.Component {
 
   // Send post request to server to fetch room info when user visits link
   componentDidMount() {
-    this.getMessages();
+    //this.getMessages();
     this.getRoomInfo();
     this.getVotes();
   }
@@ -71,16 +78,17 @@ class Room extends React.Component {
       this.setState({
         members: roomMembers,
         zipcode: roomMembers[0].rooms[0].zipcode,
+        roomName: roomMembers[0].rooms[0].name,
       });
     });
   }
 
   getVotes() {
     $.get(`/api/votes/${this.roomID}`).then(restaurants => {
-      console.log('GOT RESTAURANTS', restaurants);
-      this.setState({
-        restaurants: restaurants,
-      });
+      console.log('GOT VOTES', restaurants);
+      // this.setState({
+      //   votes: restaurants,
+      // });
     });
   }
 
@@ -150,6 +158,7 @@ class Room extends React.Component {
     });
   }
 
+
   render() {
     let restaurantList = this.state.zipcode
       ? <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant}/>
@@ -170,29 +179,37 @@ class Room extends React.Component {
             {currentSelection}
             <button onClick={this.voteApprove}>Approve</button>
             <button onClick={this.voteVeto}>Veto</button>
+            <div>
+              <h3 className="is-size-3">Scoreboard</h3>
+              {this.state.votes.sort((a, b) => {
+                return b.votes - a.votes;
+              }).map(restaurant => (
+                <h5 style={{ backgroundColor: restaurant.vetoed ? 'white' : 'lightgrey' }}>
+                  <strong>{restaurant.name}</strong> {restaurant.votes} 
+                </h5>
+              ))}
+            </div>
           </div>
           <div id="chat" className="column">
-            <h3 className="is-size-3">Chat</h3>
+            <h3 className="is-size-3">Welcome to Room {this.state.roomName}</h3>
             <div>
               {/* Need to figure out how we're going to display room members and zipcode */}
               Members: {this.state.members.map(user => <span>{user.email} </span>)}
             </div>
             <div>Zipcode: {this.state.zipcode}</div>
-            <h3>Name</h3>
-            {/* This input field is just temporary. Ideally the name will be obtained from login*/}
+            <h4 className="is-size-4">Live Chat</h4>
             <div>
-              <input type="text" value={this.state.name} onChange={this.updateName.bind(this)} />
+              Name <input type="text" value={this.state.name} onChange={this.updateName.bind(this)} />
             </div>
-            <h3>Message</h3>
+            <span>
+              Message <input type="text" value={this.state.message} onChange={this.updateMessage.bind(this)} />
+            </span>
+            <button onClick={this.sendMessage.bind(this)}>Send</button>        
             <div>
-              <input type="text" value={this.state.message} onChange={this.updateMessage.bind(this)} />
+              {this.state.messages.map((message) => (
+                <p><strong>{message.name}:</strong> {message.message}</p>
+              ))}
             </div>
-            <button onClick={this.sendMessage.bind(this)}>Send</button>
-            {/* This is temporary and just for testing. Ideally the messages will be stored in the database */}
-            <h3>Messages</h3>
-            {this.state.messages.map((message) => {
-              <p><strong>{message.name} </strong> {message.message}</p>
-            })}
           </div>
         </div>
       </div>
