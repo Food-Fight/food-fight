@@ -81,9 +81,9 @@ class Room extends React.Component {
   getVotes() {
     $.get(`/api/votes/${this.roomID}`).then(restaurants => {
       console.log('GOT VOTES', restaurants);
-      // this.setState({
-      //   votes: restaurants,
-      // });
+      this.setState({
+        votes: restaurants,
+      });
     });
   }
 
