@@ -43,6 +43,7 @@ class SubscribeDialog extends React.Component {
   }
 
   enterEmail(e) {
+    console.log(e.target.value);
     if (validator.isEmail(e.target.value)) {
       this.setState({
         email: e.target.value,
@@ -50,7 +51,7 @@ class SubscribeDialog extends React.Component {
       });
     } else {
       this.setState({
-        email: '',
+        email: e.target.value,
         emailValid: false
       });
     }
@@ -70,7 +71,7 @@ class SubscribeDialog extends React.Component {
       });
     } else {
       this.setState({
-        zip: '',
+        zip: e.target.value,
         zipValid: false
       });
     }
