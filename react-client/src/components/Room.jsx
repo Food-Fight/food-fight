@@ -69,7 +69,7 @@ class Room extends React.Component {
   
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
-      // console.log('GOT MESSAGES', messages);
+      console.log('GOT MESSAGES', messages);
       this.setState({
         messages: messages,
       });
