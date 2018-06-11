@@ -7,6 +7,7 @@ import axios from 'axios';
 import Navbar from './components/Navbar.jsx';
 import MainView from './components/MainView.jsx'
 import SignupPage from './components/AuthUserMenu/SignupPage.jsx';
+import Room from './components/Room.jsx';
 
 import 'bulma/css/bulma.css';
 import 'animate.css/animate.css';
@@ -20,7 +21,7 @@ class App extends React.Component {
       restaurants: [],
 
       loggedIn: false,
-      loggedInUsername: null,
+      loggedInUsername: undefined,
       loginError: false,
 
       searchedUsers: []
@@ -137,6 +138,9 @@ class App extends React.Component {
 
 
   render() {
+    let room = this.state.loggedInUsername
+      ? <Route path="/rooms/:roomID" render={(props) => <Room username={this.state.loggedInUsername} {...props} />} />
+      : <Route path="/rooms/:roomID" component={Room} />
     return (
       <BrowserRouter>
         <div>
@@ -158,6 +162,7 @@ class App extends React.Component {
             (props) => <SignupPage
               subscribe={this.subscribe.bind(this)}
               {...props} />} />
+          {room}
         </div>
       </BrowserRouter>
     );

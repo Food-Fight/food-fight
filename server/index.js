@@ -111,14 +111,14 @@ app.post('/searchUsers', (req, res) => {
 //
 // ─── SERVE EMAIL INVITATIONS ────────────────────────────────────────────────────
 //
-app.post('/api/email', (req, res) => {
+app.post('/api/signupEmail', (req, res) => {
   console.log('Received request to send email to', req.body.email);
-  const { email, id } = req.body;
+  const { email } = req.body;
   const emailData = {
     FromEmail: 'foodfightHR@gmail.com',
     FromName: 'Food Fight',
-    Subject: 'You\'ve been invited to a Food Fight!',
-    'Text-part': `You've been invited to a new Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/signup'} to begin.`,
+    Subject: 'You\'ve been invited to Food Fight!',
+    'Text-part': `You've been invited to a Food Fight. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}signup to signup.`,
     Recipients: [{ Email: email }],
   };
   Mailjet.post('send')
@@ -132,30 +132,50 @@ app.post('/api/email', (req, res) => {
     });
 });
 
+app.post('/api/roomEmail', (req, res) => {
+  console.log('Received request to send email to', req.body);
+  const { email, roomInfo } = req.body;
+  const emailData = {
+    FromEmail: 'foodfightHR@gmail.com',
+    FromName: 'Food Fight',
+    Subject: 'You\'ve been invited to join a Food Fight room!',
+    'Text-part': `You've been invited to a Food Fight room. Visit ${process.env.DOMAIN || 'http://localhost:3000/'}rooms/${roomInfo.uniqueid} to join.`,
+    Recipients: [{ Email: email }],
+  };
+  Mailjet.post('send')
+    .request(emailData)
+    .then(() => {
+      res.end('Email sent!');
+    })
+    .catch((err) => {
+      console.log('Error in interacting with the MailJet API', err);
+      res.status(404).end();
+    });
+});
 
 //
 // ─── CREATE ROOMS AND GET ROOM INFO ─────────────────────────────────────────────
 //
 app.post('/api/save', (req, res) => {
-  console.log('NEW ROOM DATA', req.body);
+  // console.log('NEW ROOM DATA', req.body);
   const { roomName, zip, members } = req.body;
   dbHelpers.saveRoomAndMembers(roomName, zip, members, (err, room, users) => {
     if (err) {
       console.log('Error saving room and members', err);
     } else {
-      console.log('Room and members saved!', room, users);
-      res.end(`Room ${id} saved`);
+      // console.log('Room and members saved!', room, users);
+      res.send(room[0].dataValues);
     }
   });
 });
 
-app.post('/api/roomInfo', (req, res) => {
-  const { roomID } = req.body;
+app.get('/api/rooms/:roomID', (req, res) => {
+  const { roomID } = req.params;
   dbHelpers.getRoomMembers(roomID, (err, roomMembers) => {
     if (err) {
       console.log('Error getting room members', err);
     } else {
-      console.log('Room members fetched!', roomMembers);
+      // console.log('Room members fetched!', roomMembers);
       res.send(roomMembers);
     }
   });
@@ -168,8 +188,6 @@ app.post('/api/roomInfo', (req, res) => {
 app.post('/api/search', (req, res) => {
   console.log('Received request for Yelp search of', req.body);
   const { zip } = req.body;
-  // TO DO: Store the zip code in the database (may be incorporated into /api/save request
-  // depending on how the front end is structured)
   const options = {
     method: 'GET',
     uri: 'https://api.yelp.com/v3/businesses/search',
@@ -189,31 +207,83 @@ app.post('/api/search', (req, res) => {
   });
 });
 
-app.post('/api/saveMessage', (req, res) => {
+//
+// ─── HANDLE MESSAGES AND VOTES─────────────────────────────────────────────────────────
+//
+app.post('/api/messages', (req, res) => {
   const { message, roomID } = req.body;
-  dbHelpers.saveMessage(message.name, message.message, roomID, (err) => {
+  // dbHelpers.saveMessage(message.name, message.message, roomID, (err) => {
+  //   if (err) {
+  //     console.log('Error saving message', err);
+  //     res.status(404).end();
+  //   } else {
+  //     console.log(`Message saved- ${message.name}: ${message.message}`);
+  res.end(`Message saved- ${message.name}: ${message.message}`);
+  //   }
+  // });
+});
+
+app.get('/api/messages/:roomID', (req, res) => {
+  // const { roomID } = req.params;
+  // dbHelpers.getMessages(roomID, (err, results) => {
+  //   if (err) {
+  //     console.log('Error retrieving messages', err);
+  res.status(404).end();
+  //   } else {
+  //     console.log('Messages retrieved!', roomID);
+  //     res.send(results);
+  //   }
+  // });
+});
+
+app.post('/api/nominate', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.saveRestaurant(name, roomID, (err, restaurant) => {
     if (err) {
-      console.log('Error saving message', err);
-      res.status(404).end();
+      console.log('Error saving restaurant', err);
     } else {
-      console.log(`Message saved- ${message.name}: ${message.message}`);
-      res.end(`Message saved- ${message.name}: ${message.message}`);
+      // console.log('Restaurant saved!', restaurant);
+      res.end('Restaurant saved!', restaurant);
     }
   });
 });
 
-app.post('/api/messageInfo', (req, res) => {
-  const { roomID } = req.body;
-  dbHelpers.getMessages(roomID, (err, results) => {
+app.post('/api/votes', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.updateVotes(name, roomID, (err, restaurant) => {
     if (err) {
-      console.log('Error retrieving messages', err);
-      res.status(404).end();
+      console.log('Error upvoting restaurant', err);
     } else {
-      console.log('Messages retrieved!', roomID);
-      res.send(results);
+      // console.log('Restaurant updated!', restaurant);
+      res.end('Restaurant upvoted!', restaurant);
     }
   });
 });
+
+app.post('/api/vetoes', (req, res) => {
+  const { name, roomID } = req.body;
+  dbHelpers.updateVetoes(name, roomID, (err, restaurant) => {
+    if (err) {
+      console.log('Error vetoing restaurant', err);
+    } else {
+      // console.log('Restaurant vetoed!', restaurant);
+      res.end('Restaurant vetoed!', restaurant);
+    }
+  });
+});
+
+app.get('/api/votes/:roomID', (req, res) => {
+  const { roomID } = req.params;
+  dbHelpers.getScoreboard(roomID, (err, scores) => {
+    if (err) {
+      console.log('Error fetching scoreboard', err);
+    } else {
+      // console.log('Scoreboard retrieved!', scores);
+      res.send(scores);
+    }
+  });
+});
+
 
 // ────────────────────────────────────────────────────────────────────────────────
 
@@ -236,7 +306,22 @@ db.models.sequelize.sync().then(() => {
 
     newSocket.on('chat', (data) => {
       console.log('Received chat!', data);
-      io.sockets.emit('chat', data.roomID);
+      io.sockets.emit('chat', data);
     });
-  })
+
+    newSocket.on('nominate', (data) => {
+      console.log('Nomination received!', data);
+      io.sockets.emit('nominate', data.roomID);
+    });
+
+    newSocket.on('vote', (data) => {
+      console.log('Received vote!', data);
+      io.sockets.emit('vote', data.roomID);
+    });
+
+    newSocket.on('veto', (data) => {
+      console.log('Received veto!', data);
+      io.sockets.emit('veto', data.roomID);
+    });
+  });
 });

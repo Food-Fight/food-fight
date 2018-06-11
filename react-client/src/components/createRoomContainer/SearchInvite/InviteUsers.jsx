@@ -44,7 +44,7 @@ class InviteUsers extends React.Component {
   }
 
   sendInvite(email) {
-    $.post('/api/email', { email: email },
+    $.post('/api/signupEmail', { email: email },
       (data, status) => {
         console.log(`Email sent to ${email}:`, status);
       });
