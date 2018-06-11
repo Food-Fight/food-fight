@@ -311,7 +311,7 @@ db.models.sequelize.sync().then(() => {
 
     newSocket.on('nominate', (data) => {
       console.log('Nomination received!', data);
-      io.sockets.emit('nominate', data.roomID);
+      io.sockets.emit('nominate', data);
     });
 
     newSocket.on('vote', (data) => {
@@ -323,5 +323,6 @@ db.models.sequelize.sync().then(() => {
       console.log('Received veto!', data);
       io.sockets.emit('veto', data.roomID);
     });
+
   });
 });

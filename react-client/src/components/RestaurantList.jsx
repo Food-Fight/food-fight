@@ -36,7 +36,7 @@ class RestaurantList extends React.Component {
     if (this.state.isFirstTime && this.props.currentName) {
       this.state.restaurants.forEach(restaurant => {
         if (restaurant.name === this.props.currentName) {
-          this.props.nominate(restaurant);
+          this.props.nominate(restaurant, true);
           this.setState({
             isFirstTime: false,
           });
