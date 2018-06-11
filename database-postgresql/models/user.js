@@ -22,10 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       through: 'room_users',
       foreignKey: 'user_id',
     });
-    User.belongsToMany(models.Restaurant, {
-      through: 'restaurant_user',
-      foreignKey: 'user_id',
-    });
   };
 
   return User;

@@ -31,6 +31,7 @@ const models = {
   Room: sequelize.import('./room'),
   Restaurant: sequelize.import('./restaurant'),
   Message: sequelize.import('./message'),
+  RestaurantUser: sequelize.import('./restaurantUser'),
 };
 
 // create relationships between all the tables that have associations

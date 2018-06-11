@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import SearchUsersPanel from './SearchInvite/SearchUsersPanel.jsx';
 import InviteUsers from './SearchInvite/InviteUsers.jsx';
 import CreateRoom from './CreateRoom.jsx';
@@ -11,6 +12,12 @@ class CreateRoomContainer extends React.Component {
     };
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.loggedInUser) {
+      this.addCombatant(newProps.loggedInUser);
+    }
+  }
+
   addCombatant(email) {
     this.setState({
       combatants: [...this.state.combatants, email]
@@ -19,7 +26,7 @@ class CreateRoomContainer extends React.Component {
 
   render() {
     return (
-      <div id="site-body" className="tile is-ancestor">
+      <div id="site-body" className="tile is-ancestor" >
         <div className="tile is-parent is-vertical">
           <SearchUsersPanel
             searchUsers={this.props.searchUsers}
@@ -31,11 +38,12 @@ class CreateRoomContainer extends React.Component {
           <article className="tile is-child notification create-room-container">
             <div>
               <CreateRoom
-                combatants={this.state.combatants} />
+                combatants={this.state.combatants}
+                loggedIn={this.props.loggedIn} />
             </div>
           </article>
         </div>
-      </div>
+      </div >
     )
   }
 }

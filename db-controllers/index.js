@@ -2,6 +2,9 @@ const db = require('../database-postgresql/models');
 const bcrypt = require('bcrypt');
 const uniqueString = require('unique-string');
 
+//
+// ─── USER TABLE HELPERS ─────────────────────────────────────────────────────────
+//
 const saveMember = (email, password, zipcode, callback) => {
   let hashedPW;
   if (password) {
@@ -52,6 +55,9 @@ const saveRoomAndMembers = (roomName, zip, members, callback) => {
     });
 };
 
+//
+// ─── MESSAGE TABLE HELPERS ─────────────────────────────────────────────────────────
+//
 const saveMessage = (name, message, roomID, callback) => {
   console.log('Saving message', name, message, roomID);
   db.models.Room.findOne({
@@ -99,6 +105,9 @@ const getMessages = (roomID, callback) => {
     });
 };
 
+//
+// ─── ROOM TABLE HELPERS ─────────────────────────────────────────────────────────
+//
 const getRoomMembers = (roomID, callback) => {
   db.models.User.findAll({
     attributes: ['email', 'zipcode'],
@@ -118,6 +127,9 @@ const getRoomMembers = (roomID, callback) => {
     });
 };
 
+//
+// ─── RESTAURANT TABLE HELPERS ─────────────────────────────────────────────────────────
+//
 const saveRestaurant = (name, roomID, callback) => {
   const promisedRoom = db.models.Room.findOne({
     where: {
