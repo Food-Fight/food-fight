@@ -35,9 +35,9 @@ class Room extends React.Component {
     this.socket.on('chat', message => {
       if (message.roomID === this.roomID) {
         console.log('Received message', message);
-        this.setState({ 
-          messages: [...this.state.messages, message.message], 
-        }); 
+        this.setState({
+          messages: [...this.state.messages, message.message],
+        });
         this.getMessages();
       }
     });
@@ -58,7 +58,7 @@ class Room extends React.Component {
       loggedInUsername: this.props.username
     });
   }
-  
+
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
       console.log('GOT MESSAGES', messages);
@@ -223,18 +223,29 @@ class Room extends React.Component {
             <h4 className="is-size-4">Live Chat</h4>
             <div>
               Name{' '}
-              <input type="text" value={this.state.name} onChange={this.updateName.bind(this)} />
+              <input
+                type="text"
+                className="input"
+                value={this.state.name}
+                onChange={this.updateName.bind(this)}
+              />
             </div>
             <span>
               Message{' '}
               <input
                 type="text"
+                className="input"
                 value={this.state.message}
                 onChange={this.updateMessage.bind(this)}
               />
             </span>
-            <button onClick={this.sendMessage.bind(this)}>Send</button>
-            <div>
+            <button
+              onClick={this.sendMessage.bind(this)}
+              className="button is-outlined is-primary is-medium send-message"
+            >
+              Send
+            </button>
+            <div className="chat-messages">
               {this.state.messages.map(message => (
                 <p>
                   <strong>{message.name}:</strong> {message.message}

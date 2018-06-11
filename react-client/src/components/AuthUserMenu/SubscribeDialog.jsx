@@ -7,10 +7,10 @@ class SubscribeDialog extends React.Component {
     super(props);
     this.state = {
       open: false,
-      email: null,
+      email: '',
       emailValid: false,
-      password: null,
-      zip: null,
+      password: '',
+      zip: '',
       zipValid: false,
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -50,7 +50,7 @@ class SubscribeDialog extends React.Component {
       });
     } else {
       this.setState({
-        email: null,
+        email: '',
         emailValid: false
       });
     }
@@ -70,7 +70,7 @@ class SubscribeDialog extends React.Component {
       });
     } else {
       this.setState({
-        zip: null,
+        zip: '',
         zipValid: false
       });
     }
