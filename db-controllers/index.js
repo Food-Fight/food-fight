@@ -98,7 +98,7 @@ const getRoomMembers = (roomID, callback) => {
     });
 };
 
-const saveRestaurant = (name, roomID, votes, vetoed, callback) => {
+const saveRestaurant = (name, roomID, callback) => {
   const promisedRoom = db.models.Room.findOne({
     where: {
       uniqueid: roomID,
@@ -110,8 +110,6 @@ const saveRestaurant = (name, roomID, votes, vetoed, callback) => {
   db.models.Restaurant.findOrCreate({
     where: {
       name,
-      votes,
-      vetoed,
     },
   })
     .then((restaurant) => {
@@ -129,9 +127,39 @@ const saveRestaurant = (name, roomID, votes, vetoed, callback) => {
     });
 };
 
+const updateRestaurant = (name, roomId, callback) => {
+  db.models.Restaurant.findOne({
+    where: {
+      name,
+    },
+    include: [{
+      model: db.models.Room,
+      where: {
+        uniqueid: roomId,
+      },
+    }],
+  })
+    .then((restaurant) => {
+      const currentVotes = restaurant.dataValues.votes;
+      restaurant.update({
+        votes: currentVotes + 1,
+      })
+        .then((result) => {
+          callback(null, result);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
 module.exports = {
   saveMember,
   saveRoomAndMembers,
   getRoomMembers,
   saveRestaurant,
+  updateRestaurant,
 };
