@@ -212,28 +212,28 @@ app.post('/api/search', (req, res) => {
 //
 app.post('/api/messages', (req, res) => {
   const { message, roomID } = req.body;
-  dbHelpers.saveMessage(message.name, message.message, roomID, (err) => {
-    if (err) {
-      console.log('Error saving message', err);
-      res.status(404).end();
-    } else {
-      console.log(`Message saved- ${message.name}: ${message.message}`);
-      res.end(`Message saved- ${message.name}: ${message.message}`);
-    }
-  });
+  // dbHelpers.saveMessage(message.name, message.message, roomID, (err) => {
+  //   if (err) {
+  //     console.log('Error saving message', err);
+  //     res.status(404).end();
+  //   } else {
+  //     console.log(`Message saved- ${message.name}: ${message.message}`);
+  res.end(`Message saved- ${message.name}: ${message.message}`);
+  //   }
+  // });
 });
 
 app.get('/api/messages/:roomID', (req, res) => {
-  const { roomID } = req.params;
-  dbHelpers.getMessages(roomID, (err, results) => {
-    if (err) {
-      console.log('Error retrieving messages', err);
-      res.status(404).end();
-    } else {
-      console.log('Messages retrieved!', roomID);
-      res.send(results);
-    }
-  });
+  // const { roomID } = req.params;
+  // dbHelpers.getMessages(roomID, (err, results) => {
+  //   if (err) {
+  //     console.log('Error retrieving messages', err);
+  res.status(404).end();
+  //   } else {
+  //     console.log('Messages retrieved!', roomID);
+  //     res.send(results);
+  //   }
+  // });
 });
 
 app.post('/api/nominate', (req, res) => {
@@ -287,7 +287,7 @@ db.models.sequelize.sync().then(() => {
 
     newSocket.on('chat', (data) => {
       console.log('Received chat!', data);
-      io.sockets.emit('chat', data.roomID);
+      io.sockets.emit('chat', data);
     });
 
     newSocket.on('nominate', (data) => {
