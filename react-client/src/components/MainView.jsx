@@ -9,7 +9,14 @@ class MainView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loggedInUser: '',
     }
+  }
+
+  componentDidMount() {
+    this.setState({
+      loggedInUser: this.props.loggedInUser
+    });
   }
 
   render() {
@@ -20,6 +27,8 @@ class MainView extends React.Component {
           (props) => <CreateRoomContainer
             searchUsers={this.props.searchUsers}
             searchedUsers={this.props.searchedUsers}
+            loggedIn={this.props.loggedIn}
+            loggedInUser={this.props.loggedInUser}
             {...props} />} />,
         < Route path="/rooms/:roomID" component={Room} />
       </div>

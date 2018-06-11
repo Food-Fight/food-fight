@@ -21,7 +21,7 @@ class App extends React.Component {
       restaurants: [],
 
       loggedIn: false,
-      loggedInUsername: undefined,
+      loggedInUsername: '',
       loginError: false,
 
       searchedUsers: []
@@ -29,10 +29,8 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log('PAGE RELOADED');
     axios.get('/checklogin')
       .then(res => {
-        console.log('THIS IS RES', res);
         if (res.data.user) {
           console.log('Logged in as:', res.data.user.email);
           this.setState({
@@ -105,7 +103,6 @@ class App extends React.Component {
       password
     })
       .then(res => {
-        console.log('DATA', res);
         if (res.config.data) {
           console.log('Logged in as:', JSON.parse(res.config.data).email);
           this.setState({
@@ -157,6 +154,8 @@ class App extends React.Component {
             (props) => <MainView
               searchUsers={this.searchUsers.bind(this)}
               searchedUsers={this.state.searchedUsers}
+              loggedIn={this.state.loggedIn}
+              loggedInUser={this.state.loggedInUsername}
               {...props} />} />
           <Route path="/signup" render={
             (props) => <SignupPage
