@@ -132,7 +132,7 @@ class Room extends React.Component {
   }
 
   voteApprove() {
-    /* TO DO: Check if a user has already voted for 
+    /* TO DO: Check if a user has already voted for
     the given restaurant to prevent duplicate votes */
     // console.log('STATE', this.state);
     let voteObj = {
