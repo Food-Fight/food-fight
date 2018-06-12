@@ -11,9 +11,9 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,
-  // dialectOptions: {
-  //   ssl: true,
-  // },
+  dialectOptions: {
+    ssl: true,
+  },
 });
 
 // testing connection

@@ -19,6 +19,7 @@ class Room extends React.Component {
       votes: [],
       loggedInUsername: null,
       roomName: '',
+      // The hasVoted functionality has not yet been implemented
       hasVoted: false,
     };
     this.roomID = this.props.match.params.roomID;
@@ -28,6 +29,7 @@ class Room extends React.Component {
     this.voteApprove = this.voteApprove.bind(this);
     this.voteVeto = this.voteVeto.bind(this);
 
+    // Client-side socket events
     this.socket = io.connect(process.env.PORT || 'http://localhost:3000');
     this.socket.on('chat', message => {
       if (message.roomID === this.roomID) {
@@ -51,7 +53,16 @@ class Room extends React.Component {
         this.setState({
           currentSelection: nominee.restaurant,
           hasVoted: false,
-        })
+        });
+      }
+    });
+
+    this.socket.on('join', roomID => {
+      if (roomID === this.roomID) {
+        console.log('Received new member');
+        if (this.state.currentSelection) {
+          this.socket.emit('nominate', {'restaurant': this.state.currentSelection, 'roomID': this.roomID});
+        }
       }
     })
   }
@@ -61,6 +72,7 @@ class Room extends React.Component {
     this.getMessages();
     this.getRoomInfo();
     this.getVotes();
+    this.socket.emit('join', this.roomID);
     this.setState({
       loggedInUsername: this.props.username
     });
@@ -68,7 +80,6 @@ class Room extends React.Component {
 
   getMessages() {
     $.get(`/api/messages/${this.roomID}`).then(messages => {
-      console.log('GOT MESSAGES', messages);
       this.setState({
         messages: messages,
       });
@@ -77,7 +88,6 @@ class Room extends React.Component {
 
   getRoomInfo() {
     $.get(`/api/rooms/${this.roomID}`).then(roomMembers => {
-      // console.log('GOT ROOM MEMBERS', roomMembers);
       this.setState({
         members: roomMembers,
         zipcode: roomMembers[0].rooms[0].zipcode,
@@ -88,7 +98,6 @@ class Room extends React.Component {
 
   getVotes() {
     $.get(`/api/votes/${this.roomID}`).then(restaurants => {
-      // console.log('GOT VOTES', restaurants);
       this.setState({
         votes: restaurants,
       });
@@ -104,6 +113,7 @@ class Room extends React.Component {
     });
   }
 
+  // Activated on click of RestaurantListItem component
   nominateRestaurant(restaurant, reloading = false) {
     if (this.state.isNominating) {
       this.setState({
@@ -119,11 +129,12 @@ class Room extends React.Component {
           restaurant: restaurant,
           roomID: this.roomID,
         };
-        // console.log('VOTEOBJ', voteObj);
         $.post('/api/nominate', voteObj).then(() => {
           this.socket.emit('nominate', nomObj);
         });
       }
+      // A user who nominates a restaurant should automatically vote for it
+      this.voteApprove();
     }
   }
 
@@ -140,6 +151,7 @@ class Room extends React.Component {
     });
   }
 
+  // Update from text boxes in the live chat
   updateName(e) {
     this.setState({
       name: e.target.value,
@@ -155,13 +167,11 @@ class Room extends React.Component {
   voteApprove() {
     /* TO DO: Check if a user has already voted for
     the given restaurant to prevent duplicate votes */
-    // console.log('STATE', this.state);
     let voteObj = {
       voter: this.state.loggedInUsername,
       name: this.state.currentSelection.name,
       roomID: this.roomID,
     };
-    console.log('VOTEOBJ VOTE', voteObj);
     $.post('/api/votes', voteObj).then(() => {
       this.socket.emit('vote', voteObj);
     });
@@ -179,7 +189,6 @@ class Room extends React.Component {
         name: this.state.currentSelection.name,
         roomID: this.roomID,
       };
-      // console.log('VOTEOBJ VOTE', voteObj);
       $.post('/api/vetoes', voteObj).then(() => {
         this.setState({
           currentSelection: undefined,
@@ -192,7 +201,7 @@ class Room extends React.Component {
 
   render() {
     let restaurantList = this.state.zipcode ? (
-      <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} />
+      <RestaurantList zipcode={this.state.zipcode} nominate={this.nominateRestaurant} currentName={this.currentSelectionName}/>
     ) : (
         ''
       );
