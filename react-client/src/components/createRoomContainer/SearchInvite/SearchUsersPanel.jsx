@@ -1,5 +1,6 @@
 import React from 'react';
 import SearchResult from './SearchResult.jsx';
+import InviteUsers from './InviteUsers.jsx';
 
 class SearchUsersPanel extends React.Component {
   constructor(props) {
@@ -53,6 +54,10 @@ class SearchUsersPanel extends React.Component {
             </div>
             <div>
               {usersFound}
+            </div>
+            <div id="invite-users-footer" className="is-fullwidth">
+              <div className="is-divider"></div>
+              <InviteUsers />
             </div>
           </div>
         </div>
