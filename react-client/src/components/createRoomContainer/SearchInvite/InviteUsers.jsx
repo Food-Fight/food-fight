@@ -1,6 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-import Invitation from './Invitation.jsx';
 import validator from 'validator';
 
 
@@ -9,23 +8,8 @@ class InviteUsers extends React.Component {
     super(props);
     this.state = {
       input: '',
-      emails: [],
       emailValid: false,
       error: false,
-    }
-    this.inviteAll = this.inviteAll.bind(this);
-  }
-
-  addEmail() {
-    if (this.state.emailValid) {
-      this.state.emails.push(this.state.input);
-      this.setState({
-        input: '',
-      });
-    } else {
-      this.setState({
-        error: true,
-      })
     }
   }
 
@@ -48,14 +32,8 @@ class InviteUsers extends React.Component {
       (data, status) => {
         console.log(`Email sent to ${email}:`, status);
       });
-  }
-
-  inviteAll() {
-    this.state.emails.forEach(address => {
-      this.sendInvite(address);
-    });
     this.setState({
-      emails: []
+      input: ''
     });
   }
 
@@ -88,40 +66,25 @@ class InviteUsers extends React.Component {
     ) : null;
 
     return (
-      <article className="tile is-child notification">
-        <div className="content">
-          <p className="title">
-            Invite Warriors
-          </p>
-          <div className="content">
-            <div className="field has-addons">
-              <div className="control is-expanded">
-                <input
-                  type="email"
-                  value={this.state.input}
-                  onChange={this.updateInput.bind(this)}
-                  {...checkEmailValid()}
-                  placeholder="Email" />
-              </div>
-              <div className="control">
-                <a className="button is-info" onClick={this.addEmail.bind(this)}>
-                  Add
-                </a>
-              </div>
-            </div>
-            {error}
-            {this.state.emails.map((email) => {
-              return <Invitation email={email} />
-            })}
-            <a
-              id="send-invites"
-              className="button is-info is-rounded"
-              onClick={this.inviteAll}>
-              Invite All
-            </a>
+      <div>
+        <p className="title">Invite New Users</p>
+        <div className="field has-addons">
+          <div className="control is-expanded">
+            <input
+              type="email"
+              value={this.state.input}
+              onChange={this.updateInput.bind(this)}
+              {...checkEmailValid()}
+              placeholder="Email" />
+          </div>
+          <div className="control">
+            <a className="button is-info" onClick={this.sendInvite.bind(this, this.state.input)}>
+              Invite
+          </a>
           </div>
         </div>
-      </article>
+      </div>
+
     )
   }
 }
