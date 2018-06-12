@@ -30,7 +30,9 @@ DB_NAME=
 DB_USER=
 DB_PORT=
 DB_PASSWORD=
+DOMAIN=
 ```
+
 
 ## Built With
 
@@ -38,6 +40,8 @@ DB_PASSWORD=
 - [Postgres](https://www.postgresql.org/)
 - [Bulma](https://bulma.io/)
 - [Passport](http://www.passportjs.org/)
+- [Node](https://nodejs.org/en/)
+
 
 ## Contributing
 
